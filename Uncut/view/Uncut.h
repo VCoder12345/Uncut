@@ -2,6 +2,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_Uncut.h"
+#include "model/library/LibModel.h"
+#include "controller/library/LibController.h"
 
 class Uncut : public QMainWindow
 {
@@ -11,6 +13,13 @@ public:
     Uncut(QWidget *parent = nullptr);
     ~Uncut();
 
+public slots:
+    void onLoad();
+
 private:
     Ui::UncutClass ui;
+    LibModel* libModel;
+    LibController* libController;
+
+    
 };

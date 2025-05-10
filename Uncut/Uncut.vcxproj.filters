@@ -37,8 +37,56 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="controller\main.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="view\PreviewView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="view\library\LibraryView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="view\library\LibItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="model\library\LibModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controller\library\LibController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="services\video\VideoUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="view\PreviewView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="view\library\LibraryView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="model\library\LibModel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="controller\library\LibController.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="view\PreviewView.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="view\library\LibraryView.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="view\library\LibItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="services\video\VideoUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
