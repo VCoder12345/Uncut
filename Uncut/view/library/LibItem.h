@@ -9,7 +9,10 @@
 class LibItem  : public QGraphicsItem
 {
 public:
-	LibItem(const LibItemData* data, int width, int height);
+	int index;
+	const LibItemData* data;
+
+	LibItem(const LibItemData* data, int width, int height, int index);
 	~LibItem();
 
 protected:
@@ -18,8 +21,8 @@ protected:
 	void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
 
 private:
-	const LibItemData* data;
 	const int width, height;
-
+	const int textMargin = 12;
+	const int padding = 5;
 
 };

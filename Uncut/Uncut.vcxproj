@@ -116,20 +116,21 @@
   <ItemGroup>
     <QtRcc Include="view\Uncut.qrc" />
     <QtUic Include="view\library\LibraryView.ui" />
-    <QtUic Include="view\PreviewView.ui" />
+    <QtUic Include="view\preview\PreviewView.ui" />
     <QtUic Include="view\Uncut.ui" />
     <QtMoc Include="view\Uncut.h" />
     <ClCompile Include="controller\library\LibController.cpp" />
     <ClCompile Include="model\library\LibModel.cpp" />
-    <ClCompile Include="services\video\VideoUtils.cpp" />
+    <ClCompile Include="controller\preview\PreviewController.cpp" />
+    <ClCompile Include="services\video\VideoDecoder.cpp" />
     <ClCompile Include="view\library\LibItem.cpp" />
     <ClCompile Include="view\library\LibraryView.cpp" />
-    <ClCompile Include="view\PreviewView.cpp" />
+    <ClCompile Include="view\preview\PreviewView.cpp" />
     <ClCompile Include="view\Uncut.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="view\PreviewView.h" />
+    <QtMoc Include="view\preview\PreviewView.h" />
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="view\library\LibraryView.h" />
@@ -137,7 +138,15 @@
   <ItemGroup>
     <QtMoc Include="controller\library\LibController.h" />
     <QtMoc Include="model\library\LibModel.h" />
-    <ClInclude Include="services\video\VideoUtils.h" />
+    <QtMoc Include="..\..\SDL_Audio_Qt\SDL_Audio_Qt\AudioDecoderWorker.h" />
+    <QtMoc Include="services\video\AudioDecoderWorker.h" />
+    <QtMoc Include="controller\preview\PreviewController.h" />
+    <ClInclude Include="services\video\VideoDecoder.h" />
+    <QtMoc Include="services\video\VideoDisplayWorker.h" />
+    <QtMoc Include="services\video\VideoDecoderWorker.h" />
+    <ClInclude Include="services\video\VideoFrame.h" />
+    <ClInclude Include="services\video\VideoStreamBuffer.h" />
+    <ClInclude Include="utils\TimeHelper.h" />
     <ClInclude Include="view\library\LibItem.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

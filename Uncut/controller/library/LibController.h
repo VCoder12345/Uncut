@@ -2,6 +2,7 @@
 #include <QObject>
 #include "model/library/LibModel.h"
 #include <qstringlist.h>
+#include <services/video/VideoDecoder.h>
 
 class LibController : public QObject
 {
@@ -9,15 +10,19 @@ class LibController : public QObject
 
 public:
 	LibController(LibModel* model);
+
+	void importItemFromFile(const QString& filePath);
 	
 
 public slots:
 	void onItemImport();
 	void onFilesDropped(const QStringList& filePaths);
+	void onItemSelected(int selected, const LibItemData* data);
 
 private:
 	LibModel* model;
+	VideoDecoder videoDecoder;
 
-	void importItemFromFile(const QString& filePath);
+	
 };
 

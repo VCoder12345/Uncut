@@ -111,7 +111,7 @@
   <customwidget>
    <class>PreviewView</class>
    <extends>QWidget</extends>
-   <header>../view/previewView.h</header>
+   <header>../view/preview/previewView.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

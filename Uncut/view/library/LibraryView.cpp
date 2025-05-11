@@ -25,6 +25,7 @@ void LibraryView::setModel(LibModel* model) {
 	this->model = model;
 
 	connect(model, &LibModel::itemAdded, this, &LibraryView::itemAdded);
+	connect(model, &LibModel::itemSelected, this, &LibraryView::onItemSelect);
 }
 
 void LibraryView::layoutImages()
@@ -71,9 +72,30 @@ void LibraryView::dropEvent(QDropEvent* event)
 	emit filesDropped(filePaths);
 }
 
+void LibraryView::mouseDoubleClickEvent(QMouseEvent* event)
+{
+	LibItem* item = static_cast<LibItem*>(itemAt(event->pos()));
+
+	if (item) {
+		int selected = item->index;
+		emit itemSelected(selected, item->data);
+	}
+
+	QGraphicsView::mouseDoubleClickEvent(event);
+}
+
+void LibraryView::onItemSelect(int oldSelected, int selected, const LibItemData* data)
+{
+	if(oldSelected >= 0)
+		libItems[oldSelected]->update();
+	libItems[selected]->update();
+
+	update();
+}
+
 void LibraryView::itemAdded(const LibItemData* data)
 {
-	LibItem* item = new LibItem(data, itemWidth, itemHeight);
+	LibItem* item = new LibItem(data, itemWidth, itemHeight, libItems.size());
 	scene->addItem(item);
 	libItems.push_back(item);
 

@@ -40,7 +40,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="view\PreviewView.cpp">
+    <ClCompile Include="view\preview\PreviewView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="view\library\LibraryView.cpp">
@@ -55,12 +55,15 @@
     <ClCompile Include="controller\library\LibController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="services\video\VideoUtils.cpp">
+    <ClCompile Include="services\video\VideoDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controller\preview\PreviewController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="view\PreviewView.h">
+    <QtMoc Include="view\preview\PreviewView.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="view\library\LibraryView.h">
@@ -72,9 +75,24 @@
     <QtMoc Include="controller\library\LibController.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="..\..\SDL_Audio_Qt\SDL_Audio_Qt\AudioDecoderWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="services\video\VideoDisplayWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="services\video\VideoDecoderWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="services\video\AudioDecoderWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="controller\preview\PreviewController.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <QtUic Include="view\PreviewView.ui">
+    <QtUic Include="view\preview\PreviewView.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="view\library\LibraryView.ui">
@@ -85,7 +103,16 @@
     <ClInclude Include="view\library\LibItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="services\video\VideoUtils.h">
+    <ClInclude Include="services\video\VideoDecoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="services\video\VideoFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils\TimeHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="services\video\VideoStreamBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
