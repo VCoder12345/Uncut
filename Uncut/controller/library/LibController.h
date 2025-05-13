@@ -2,7 +2,7 @@
 #include <QObject>
 #include "model/library/LibModel.h"
 #include <qstringlist.h>
-#include <services/video/VideoDecoder.h>
+#include <services/decoder/VideoDecoder.h>
 
 class LibController : public QObject
 {

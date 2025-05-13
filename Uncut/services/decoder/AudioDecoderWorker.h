@@ -96,8 +96,8 @@ private:
                 qWarning() << "[audio] Unsupported codec";
                 return -1;
             }
-            AVChannelLayout inLayout;
-            av_channel_layout_copy(&inLayout, &codecCtx->ch_layout);
+            /*AVChannelLayout inLayout;
+            av_channel_layout_copy(&inLayout, &codecCtx->ch_layout);*/
 
             AVChannelLayout outLayout;
             av_channel_layout_default(&outLayout, 2); // stereo output
@@ -174,7 +174,7 @@ private:
             }
 
             avcodec_free_context(&codecCtx);
-            av_channel_layout_uninit(&inLayout);
+            //av_channel_layout_uninit(&inLayout);
             av_channel_layout_uninit(&outLayout);
             swr_free(&swrCtx);
             av_free(outBuffer);

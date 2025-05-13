@@ -55,10 +55,16 @@
     <ClCompile Include="controller\library\LibController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="services\video\VideoDecoder.cpp">
+    <ClCompile Include="services\decoder\FFMPEGDecoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="controller\preview\PreviewController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="services\decoder\VideoDecoder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="services\decoder\AudioDecoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -73,18 +79,6 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="controller\library\LibController.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="..\..\SDL_Audio_Qt\SDL_Audio_Qt\AudioDecoderWorker.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="services\video\VideoDisplayWorker.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="services\video\VideoDecoderWorker.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <QtMoc Include="services\video\AudioDecoderWorker.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="controller\preview\PreviewController.h">
@@ -103,16 +97,19 @@
     <ClInclude Include="view\library\LibItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="services\video\VideoDecoder.h">
+    <ClInclude Include="services\decoder\FFMPEGDecoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="services\video\VideoFrame.h">
+    <ClInclude Include="services\decoder\VideoFrame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utils\TimeHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="services\video\VideoStreamBuffer.h">
+    <ClInclude Include="services\decoder\VideoDecoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="services\decoder\AudioDecoder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

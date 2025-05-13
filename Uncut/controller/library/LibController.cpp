@@ -32,8 +32,8 @@ void LibController::onItemSelected(int selected, const LibItemData* data)
 
 void LibController::importItemFromFile(const QString& filePath)
 {
-	VideoInfo videoInfo;
-	if (videoDecoder.getVideoInfo(filePath.toStdString().c_str(), videoInfo)) {
+	if(auto result = videoDecoder.getVideoInfo(filePath.toStdString().c_str())) {
+		VideoInfo videoInfo = std::move(result.value());
 		QString fileName = filePath.sliced(filePath.lastIndexOf("/") + 1);
 		QImage img = videoInfo.firstFrame->toImage();
 		TimeObj durationObj = TimeObj::timeFromMicroseconds(videoInfo.duration);

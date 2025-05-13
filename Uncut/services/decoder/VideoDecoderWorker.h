@@ -153,7 +153,6 @@ private:
             av_freep(&buffer[0]);
             sws_freeContext(sws_ctx);
 
-
         }
 
 
