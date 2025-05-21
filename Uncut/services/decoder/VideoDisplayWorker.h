@@ -6,6 +6,7 @@
 #include <qdebug.h>
 #include <SDL3/SDL_audio.h>
 #include "AudioDecodeWorker.h"
+#include <atomic>
 
 class VideoDisplayWorker: public QObject {
     Q_OBJECT
@@ -13,6 +14,9 @@ public:
     VideoDisplayWorker(VideoStreamBuffer* vbuffer, SDL_AudioStream* stream, AudioDecodeWorker* audioDec)
         : vbuffer(vbuffer), stream(stream), audioDec(audioDec) {}
 
+    void interrupt() {
+        interrupted.store(true);
+    }
 public slots:
     void startDisplaying() {
 
@@ -20,12 +24,12 @@ public slots:
         std::shared_ptr<VideoFrame> frame = vbuffer->dequeue();
         if (!frame) return;
 
-        while (true) {
+        while (!interrupted.load() && !vbuffer->isFinished()) {
             double audioPts = audioClock();
 
             // Drop frames that are too far behind
-            while (frame && frame->pts < audioPts - 0.03) {  // 30ms late? Drop it.
-                qDebug() << "Dropping late frame at " << frame->pts << " (audio: " << audioPts << ")";
+            while (!interrupted.load() && frame && frame->pts < audioPts - 0.03) {  // 30ms late? Drop it.
+                //qDebug() << "Dropping late frame at " << frame->pts << " (audio: " << audioPts << ")";
                 frame = vbuffer->dequeue();
             }
 
@@ -33,7 +37,7 @@ public slots:
 
             // Wait until it's time to show the frame
             if (frame->pts <= audioPts + 0.005) { // Allow small lead
-                qDebug() << "Displaying frame " << frame->pts << " (audio: " << audioPts << ")";
+                // qDebug() << "Displaying frame " << frame->pts << " (audio: " << audioPts << ")";
                 emit displayFrame(frame);
                 frame = vbuffer->dequeue();
             }
@@ -64,4 +68,5 @@ private:
     qint64 baseBytesPlayed = 0;
     SDL_AudioStream* stream;
     AudioDecodeWorker* audioDec;
+    std::atomic<bool> interrupted{ false };
 };

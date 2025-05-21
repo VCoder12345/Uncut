@@ -30,14 +30,21 @@ public:
     }
 
     void cleanup() {
+        //qDebug() << "video decoder clean";
         decoder.cleanup();
         decoder.closeStream(stream);
+    }
+
+    void interrupt() {
+        interrupted.store(true);
     }
 
 public slots:
     void startDecoding() {
         decodeVideoFile();
     }
+
+   
 
 signals:
     void finished();
@@ -47,6 +54,7 @@ private:
     VideoStreamBuffer* videoBuffer;
     VideoDecoder decoder;
     Stream stream;
+    std::atomic<bool> interrupted{ false };
 
     void decodeVideoFile() {
         qDebug() << "[video] start decoding";
@@ -56,7 +64,7 @@ private:
             stream = streamResult.value();
 
             std::shared_ptr<VideoFrame> frame;
-            while (frame = decoder.nextVideoFrame(stream)) {
+            while (!interrupted.load() && (frame = decoder.nextVideoFrame(stream))) {
                 videoBuffer->appendData(frame);
             }
 

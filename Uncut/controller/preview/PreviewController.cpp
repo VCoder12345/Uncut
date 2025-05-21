@@ -42,7 +42,16 @@ void PreviewController::onPlayBtnClicked()
 
 void PreviewController::deleteThreads()
 {
+    if(audioWorker)
+        audioWorker->interrupt();
 
+    if(videoDecodeWorker)
+        videoDecodeWorker->interrupt();
+    
+    if(videoDisplayWorker)
+        videoDisplayWorker->interrupt();
+
+    vBuffer->interrupt();
 
     if (audioThread) {
         audioThread->quit();

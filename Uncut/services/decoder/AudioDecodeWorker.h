@@ -31,6 +31,10 @@ public:
         cleanup();
     }
 
+    void interrupt() {
+        interrupted.store(true);
+    }
+
 public slots:
     void startDecoding() {
         decodeAudioFile();
@@ -60,10 +64,13 @@ private:
     AudioDecoder decoder;
     const size_t MAX_BUFFER;
     Stream stream;
+    std::atomic<bool> interrupted{ false };
     
     void cleanup() {
         decoder.cleanup();
         decoder.closeStream(stream);
+
+        //qDebug() << "audio decoder clean";
     }
 
     void decodeAudioFile() {
@@ -75,9 +82,9 @@ private:
             stream = streamResult.value();
             
             std::unique_ptr<AudioFrame> frame;
-            while (frame = decoder.nextAudioFrame(stream)) {
+            while (!interrupted.load() && (frame = decoder.nextAudioFrame(stream))) {
 
-                while (SDL_GetAudioStreamQueued(sdlStream) > MAX_BUFFER) {
+                while (!interrupted.load() && SDL_GetAudioStreamQueued(sdlStream) > MAX_BUFFER) {
                     QThread::msleep(10);
                     QCoreApplication::processEvents();
                 }
@@ -91,7 +98,7 @@ private:
 
             cleanup();
 
-            qDebug() << "finished decoding";
+            qDebug() << "[audio] finished decoding";
         }
     }
 };

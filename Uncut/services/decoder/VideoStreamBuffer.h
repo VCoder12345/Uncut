@@ -76,6 +76,9 @@ public:
         waitCond.wakeAll();
     }
 
+    void interrupt() {
+        clear();
+    }
 
 private:
     std::shared_ptr<VideoFrame>* buffer;
