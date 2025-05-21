@@ -6,8 +6,9 @@ class AudioFrame {
 public:
     uint8_t* data;
     int size;
+    double pts;
 
-    AudioFrame(uint8_t* data, int size) : data(data), size(size) {}
+    AudioFrame(uint8_t* data, int size, double pts) : data(data), size(size), pts(pts) {}
 };
 
 class AudioDecoder :

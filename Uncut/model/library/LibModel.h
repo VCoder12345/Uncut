@@ -5,14 +5,15 @@
 #include <QObject>
 #include <QString>
 #include <utils/TimeHelper.h>
+#include "services/decoder/VideoFrame.h"
 
 class LibItemData {
 public:
-	LibItemData(QImage previewImg, QString filePath, QString name, TimeObj duration) : previewImg(previewImg), filePath(filePath), name(name), duration(duration), selected(false) {
+	LibItemData(std::shared_ptr<VideoFrame> previewFrame, QString filePath, QString name, TimeObj duration) : previewFrame(previewFrame), filePath(filePath), name(name), duration(duration), selected(false) {
 
 	}
 
-	QImage previewImg;
+	std::shared_ptr<VideoFrame> previewFrame;
 	QString name;
 	TimeObj duration;
 	bool selected;

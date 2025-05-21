@@ -6,6 +6,7 @@
 #include <QPixmap>
 
 #include "ui_PreviewView.h"
+#include "services/decoder/VideoFrame.h"
 
 class PreviewView : public QWidget
 {
@@ -15,6 +16,10 @@ public:
 	PreviewView(QWidget *parent = nullptr);
 	~PreviewView();
 
+	
+
+public slots:
+	void drawFrame(std::shared_ptr<VideoFrame> frame);
 
 private:
 	Ui::PreviewViewClass ui;

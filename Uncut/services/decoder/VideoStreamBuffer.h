@@ -5,27 +5,38 @@
 #include <qmutex.h>
 #include <qwaitcondition.h>
 #include <qdebug.h>
+#include <memory>
+#include <vector>
 
 class VideoStreamBuffer {
 public:
-
-
-    ~VideoStreamBuffer() {
-        while (!buffer.empty()) {
-            delete buffer.front();
-            buffer.pop();
-        }
+    VideoStreamBuffer(size_t maxSize) : maxSize(maxSize) {
+        this->buffer = new std::shared_ptr<VideoFrame> [maxSize];
     }
 
-    void appendData(VideoFrame* vframe) {
+    ~VideoStreamBuffer() {
+        delete[] buffer;
+    }
+
+    void appendData(std::shared_ptr<VideoFrame> vframe) {
         QMutexLocker locker(&mutex);
-        buffer.push(vframe);
+        while (bufferSize >= maxSize) {
+            waitCond.wait(&mutex);
+        }
+
+
+        buffer[tailPointer] = vframe;
+
+        
+        tailPointer = (tailPointer + 1) % maxSize;
+        ++bufferSize;
+
         waitCond.wakeAll();
     }
 
     size_t size() const {
         QMutexLocker locker(&mutex);
-        return buffer.size();
+        return bufferSize;
     }
 
     void setEOF() {
@@ -33,29 +44,46 @@ public:
         reached_eof = true;
     }
 
-    VideoFrame* dequeue() {
+    std::shared_ptr<VideoFrame> dequeue() {
         QMutexLocker locker(&mutex);
-        while (buffer.size() == 0 && !reached_eof) {
+        while (bufferSize == 0 && !reached_eof) {
             waitCond.wait(&mutex);
         }
 
-        if (buffer.size() == 0 && reached_eof) return nullptr;
+        if (bufferSize == 0 && reached_eof) return nullptr;
 
-        VideoFrame* head = buffer.front();
-        buffer.pop();
+        std::shared_ptr<VideoFrame> front = buffer[headPointer];
+        headPointer = (headPointer + 1) % maxSize;
+        --bufferSize;
 
-        return head;
+        waitCond.wakeAll();
+
+        return front;
     }
 
     bool isFinished() const {
         QMutexLocker locker(&mutex);
         
-        return buffer.size() == 0 && reached_eof;
+        return bufferSize == 0 && reached_eof;
     }
 
+    void clear() {
+        QMutexLocker locker(&mutex);
+        bufferSize = 0;
+        headPointer = 0;
+        tailPointer = 0;
+        reached_eof = false;
+        waitCond.wakeAll();
+    }
+
+
 private:
-	std::queue<VideoFrame*> buffer;
+    std::shared_ptr<VideoFrame>* buffer;
 	mutable QMutex mutex;
     bool reached_eof = false;
     mutable QWaitCondition waitCond;
+    const size_t maxSize;
+    size_t bufferSize = 0;
+    size_t headPointer = 0;
+    size_t tailPointer = 0;
 };

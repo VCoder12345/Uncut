@@ -144,8 +144,12 @@
     <QtMoc Include="model\library\LibModel.h" />
     <QtMoc Include="controller\preview\PreviewController.h" />
     <ClInclude Include="services\decoder\AudioDecoder.h" />
+    <QtMoc Include="services\decoder\AudioDecodeWorker.h" />
     <ClInclude Include="services\decoder\FFMPEGDecoder.h" />
+    <QtMoc Include="services\decoder\VideoDecodeWorker.h" />
+    <QtMoc Include="services\decoder\VideoDisplayWorker.h" />
     <ClInclude Include="services\decoder\VideoFrame.h" />
+    <ClInclude Include="services\decoder\VideoStreamBuffer.h" />
     <ClInclude Include="utils\TimeHelper.h" />
     <ClInclude Include="services\decoder\VideoDecoder.h" />
     <ClInclude Include="view\library\LibItem.h" />

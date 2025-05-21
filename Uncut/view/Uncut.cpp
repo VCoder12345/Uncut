@@ -2,6 +2,8 @@
 
 #include "library/LibraryView.h"
 #include <qtimer.h>
+#include <controller/preview/PreviewController.h>
+#include "preview/PreviewView.h"
 
 
 Uncut::Uncut(QWidget *parent)
@@ -19,6 +21,11 @@ Uncut::Uncut(QWidget *parent)
     QObject::connect(libView, &LibraryView::filesDropped, libController, &LibController::onFilesDropped);
     QObject::connect(libView, &LibraryView::itemSelected, libController, &LibController::onItemSelected);
 
+    previewController = new PreviewController(ui.previewFrame->findChild<PreviewView*>("previewView"));
+    connect(libModel, &LibModel::itemSelected, previewController, &PreviewController::onLibItemSelected);
+    QPushButton* playBtn = ui.previewFrame->findChild<QPushButton*>("playBtn");
+    connect(playBtn, &QPushButton::clicked, previewController, &PreviewController::onPlayBtnClicked);
+
     QTimer::singleShot(0, this, SLOT(onLoad()));
 }
 
@@ -26,6 +33,7 @@ Uncut::~Uncut()
 {
     delete libModel;
     delete libController;
+    delete previewController;
 }
 
 void Uncut::onLoad()

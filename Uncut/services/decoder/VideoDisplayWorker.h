@@ -2,23 +2,22 @@
 #include <QObject>
 
 #include "VideoStreamBuffer.h"
-#include "PreviewView.h"
 #include <QThread>
 #include <qdebug.h>
 #include <SDL3/SDL_audio.h>
-#include "AudioDecoderWorker.h"
+#include "AudioDecodeWorker.h"
 
 class VideoDisplayWorker: public QObject {
     Q_OBJECT
 public:
-    VideoDisplayWorker(VideoStreamBuffer* vbuffer, SDL_AudioStream* stream, AudioDecoderWorker* audioDec)
+    VideoDisplayWorker(VideoStreamBuffer* vbuffer, SDL_AudioStream* stream, AudioDecodeWorker* audioDec)
         : vbuffer(vbuffer), stream(stream), audioDec(audioDec) {}
 
 public slots:
     void startDisplaying() {
 
         qDebug() << "[displayer] let's start displaying stuff";
-        VideoFrame* frame = vbuffer->dequeue();
+        std::shared_ptr<VideoFrame> frame = vbuffer->dequeue();
         if (!frame) return;
 
         while (true) {
@@ -27,7 +26,6 @@ public slots:
             // Drop frames that are too far behind
             while (frame && frame->pts < audioPts - 0.03) {  // 30ms late? Drop it.
                 qDebug() << "Dropping late frame at " << frame->pts << " (audio: " << audioPts << ")";
-                delete frame;
                 frame = vbuffer->dequeue();
             }
 
@@ -36,7 +34,7 @@ public slots:
             // Wait until it's time to show the frame
             if (frame->pts <= audioPts + 0.005) { // Allow small lead
                 qDebug() << "Displaying frame " << frame->pts << " (audio: " << audioPts << ")";
-                emit displayImage(frame);
+                emit displayFrame(frame);
                 frame = vbuffer->dequeue();
             }
             else {
@@ -57,7 +55,7 @@ public slots:
 
 signals:
     void finished();
-    void displayImage(VideoFrame* frame);
+    void displayFrame(std::shared_ptr<VideoFrame> frame);
 
 private:
     VideoStreamBuffer* vbuffer;
@@ -65,5 +63,5 @@ private:
     const qint64 bytesPerSecond = 176400;
     qint64 baseBytesPlayed = 0;
     SDL_AudioStream* stream;
-    AudioDecoderWorker* audioDec;
+    AudioDecodeWorker* audioDec;
 };

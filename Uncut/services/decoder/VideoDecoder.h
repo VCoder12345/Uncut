@@ -2,16 +2,19 @@
 #include "FFMPEGDecoder.h"
 #include "VideoFrame.h"
 #include <memory>
+#include <optional>
 
-struct VideoInfo {
-	std::unique_ptr<VideoFrame> firstFrame;
+class  VideoInfo {
+public:
+	std::shared_ptr<VideoFrame> firstFrame;
 	int64_t duration;
+
 };
 
 class VideoDecoder : public FFMPEGDecoder
 {
 public:
-	std::unique_ptr<VideoFrame> nextVideoFrame(const Stream& stream);
+	std::shared_ptr<VideoFrame> nextVideoFrame(const Stream& stream);
 	std::optional<Stream> openStream(const char* filePath);
 	void cleanup() override;
 	std::optional<VideoInfo> getVideoInfo(const char* filePath);

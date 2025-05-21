@@ -1,4 +1,6 @@
 #include "PreviewView.h"
+#include <qtimer.h>
+#include <QScreen>
 
 PreviewView::PreviewView(QWidget *parent)
 	: QWidget(parent)
@@ -6,11 +8,19 @@ PreviewView::PreviewView(QWidget *parent)
     this->img.load("res/einBild.jpg");
 	ui.setupUi(this);
 
-    
+
+    QTimer* repaintTimer = new QTimer(this);
+    connect(repaintTimer, &QTimer::timeout, this, QOverload<>::of(&PreviewView::update));
+    repaintTimer->start(16);
 }
 
 PreviewView::~PreviewView()
 {}
+
+void PreviewView::drawFrame(std::shared_ptr<VideoFrame> frame)
+{
+    this->img = frame->toImage();
+}
 
 void PreviewView::paintEvent(QPaintEvent* e) {
 

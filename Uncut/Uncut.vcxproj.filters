@@ -84,6 +84,15 @@
     <QtMoc Include="controller\preview\PreviewController.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="services\decoder\AudioDecodeWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="services\decoder\VideoDecodeWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="services\decoder\VideoDisplayWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="view\preview\PreviewView.ui">
@@ -110,6 +119,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="services\decoder\AudioDecoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="services\decoder\VideoStreamBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

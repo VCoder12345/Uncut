@@ -7,6 +7,7 @@ std::optional<Stream> FFMPEGDecoder::openStream(const char* filePath, int stream
 {
 	Stream stream;
 	stream.formatCtx = NULL;
+	qDebug() << "opening file at " << filePath;
 	if (avformat_open_input(&stream.formatCtx, filePath, NULL, NULL) < 0) {
 		qWarning() << "[ffmpeg] Could not open file " << filePath;
 		return std::nullopt;

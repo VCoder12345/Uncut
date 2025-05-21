@@ -16,7 +16,7 @@ void LibItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
 	QFont font("Arial", 10);
 	painter->setFont(font);
 
-	painter->drawImage(QRect(padding, padding, width, height), data->previewImg);
+	painter->drawImage(QRect(padding, padding, width, height), data->previewFrame->toImage());
 	QString durationTxt;
 	if (data->duration.hours == 0) {
 		durationTxt = QString::asprintf("%02d:%02d", data->duration.minutes, data->duration.seconds);

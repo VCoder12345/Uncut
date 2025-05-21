@@ -37,7 +37,7 @@ std::unique_ptr<AudioFrame> AudioDecoder::nextAudioFrame(const Stream& stream)
         int dataSize = outSamples * 2 * 2; // samples * channels * 16-bit
 
 
-        return std::make_unique<AudioFrame>(outBuffer, dataSize);
+        return std::make_unique<AudioFrame>(outBuffer, dataSize, decoderFrame.pts);
     }
 
     return nullptr;
@@ -52,7 +52,9 @@ void AudioDecoder::cleanup()
 {
     FFMPEGDecoder::cleanup();
 
-    swr_free(&swrCtx);
-    av_free(outBuffer);
-    av_channel_layout_uninit(&outLayout);
-}
+    if (isInitialised()) {
+		swr_free(&swrCtx);
+		av_free(outBuffer);
+		av_channel_layout_uninit(&outLayout);
+    }
+   }

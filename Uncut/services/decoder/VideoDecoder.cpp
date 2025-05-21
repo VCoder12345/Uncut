@@ -1,7 +1,7 @@
 #include "VideoDecoder.h"
 #include <QDebug>
 
-std::unique_ptr<VideoFrame> VideoDecoder::nextVideoFrame(const Stream& stream)
+std::shared_ptr<VideoFrame> VideoDecoder::nextVideoFrame(const Stream& stream)
 {
 
 	if (!isInitialised()) {
@@ -24,8 +24,7 @@ std::unique_ptr<VideoFrame> VideoDecoder::nextVideoFrame(const Stream& stream)
 		int size = fw * fh * 3;
 		uint8_t* fdata = new uint8_t[size];
 		std::copy(buffer[0], buffer[0] + size, fdata);
-		return std::make_unique<VideoFrame>(fdata, fw, fh, decodeFrame.pts);
-
+		return std::make_unique<VideoFrame>(fdata, fw, fh, size, decodeFrame.pts);
 	}
 
 	return nullptr;
@@ -39,9 +38,11 @@ std::optional<Stream> VideoDecoder::openStream(const char* filePath)
 void VideoDecoder::cleanup()
 {
 	FFMPEGDecoder::cleanup();
-
-	av_freep(&buffer[0]);
-	sws_freeContext(sws_ctx);
+	
+	if (isInitialised()) {
+		av_freep(&buffer[0]);
+		sws_freeContext(sws_ctx);
+	}
 }
 
 std::optional<VideoInfo> VideoDecoder::getVideoInfo(const char* filePath) {
@@ -50,10 +51,10 @@ std::optional<VideoInfo> VideoDecoder::getVideoInfo(const char* filePath) {
 		VideoInfo info;
 		info.duration = stream.formatCtx->duration;
 
-		std::unique_ptr<VideoFrame> videoFrame = nextVideoFrame(stream);
+		std::shared_ptr<VideoFrame> videoFrame = nextVideoFrame(stream);
 
 		if (videoFrame) {
-			info.firstFrame = std::move(videoFrame);
+			info.firstFrame = videoFrame;
 		}
 		cleanup();
 
