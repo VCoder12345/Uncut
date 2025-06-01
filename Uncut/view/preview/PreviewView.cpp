@@ -19,6 +19,7 @@ PreviewView::~PreviewView()
 
 void PreviewView::drawFrame(std::shared_ptr<VideoFrame> frame)
 {
+    this->frame = frame;
     this->img = frame->toImage();
 }
 

@@ -1,0 +1,69 @@
+#include "TlModel.h"
+
+
+TlModel::TlModel()
+{
+}
+
+TlModel::~TlModel()
+{
+	for (TrackData* track : tracks) {
+		delete track;
+	}
+}
+
+void TlModel::addClip(ClipData* clipData, int trackIndex) {
+	clipData->trackIndex = trackIndex;
+	tracks[trackIndex]->addClip(clipData);
+
+	emit clipAdded(clipData, trackIndex);
+}
+
+void TlModel::addTrack()
+{
+	qreal y;
+	if (tracks.size() > 0) {
+		TrackData* lastTrack = tracks.back();
+		y = lastTrack->y + lastTrack->height;
+	} 
+	else
+		y = 0;
+	TrackData* data = new TrackData(y, defaultTrackHeight);
+	tracks.push_back(data);
+	emit trackAdded(data);
+}
+
+void TlModel::select(ClipData* clip)
+{
+	clearSelection(false);
+	addSelect(clip);
+}
+
+void TlModel::clearSelection(bool emitEvent)
+{
+	if(slcClip)
+		slcClip->selected = false;
+
+	slcClip = nullptr;
+
+	if(emitEvent)
+		emit clipsSelected();
+}
+
+void TlModel::addSelect(ClipData* clip)
+{
+	clip->selected = true;
+	slcClip = clip;
+	emit clipsSelected();
+}
+
+void TlModel::moveClip(ClipData* clip, double newPos, int newTrackIndex)
+{
+	tracks[clip->trackIndex]->removeClip(clip);
+	clip->trackIndex = newTrackIndex;
+	clip->pos = newPos;
+	
+	tracks[newTrackIndex]->addClip(clip);
+	emit clipMoved();
+}
+

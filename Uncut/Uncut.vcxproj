@@ -121,15 +121,20 @@
     <QtUic Include="view\preview\PreviewView.ui" />
     <QtUic Include="view\Uncut.ui" />
     <QtMoc Include="view\Uncut.h" />
+    <ClCompile Include="model\timeline\TlModel.cpp" />
     <ClCompile Include="services\decoder\AudioDecoder.cpp" />
     <ClCompile Include="controller\library\LibController.cpp" />
     <ClCompile Include="model\library\LibModel.cpp" />
     <ClCompile Include="controller\preview\PreviewController.cpp" />
     <ClCompile Include="services\decoder\FFMPEGDecoder.cpp" />
     <ClCompile Include="services\decoder\VideoDecoder.cpp" />
+    <ClCompile Include="controller\timeline\TlController.cpp" />
     <ClCompile Include="view\library\LibItem.cpp" />
     <ClCompile Include="view\library\LibraryView.cpp" />
     <ClCompile Include="view\preview\PreviewView.cpp" />
+    <ClCompile Include="view\timeline\ClipItem.cpp" />
+    <ClCompile Include="view\timeline\TlView.cpp" />
+    <ClCompile Include="view\timeline\TrackItem.cpp" />
     <ClCompile Include="view\Uncut.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -140,9 +145,16 @@
     <QtMoc Include="view\library\LibraryView.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="model\timeline\ClipData.h" />
+    <QtMoc Include="controller\timeline\TlController.h" />
+    <ClInclude Include="view\timeline\TrackItem.h" />
+    <ClInclude Include="view\timeline\ClipItem.h" />
+    <QtMoc Include="view\timeline\TlView.h" />
     <QtMoc Include="controller\library\LibController.h" />
     <QtMoc Include="model\library\LibModel.h" />
     <QtMoc Include="controller\preview\PreviewController.h" />
+    <QtMoc Include="model\timeline\TlModel.h" />
+    <ClInclude Include="model\timeline\TrackData.h" />
     <ClInclude Include="services\decoder\AudioDecoder.h" />
     <QtMoc Include="services\decoder\AudioDecodeWorker.h" />
     <ClInclude Include="services\decoder\FFMPEGDecoder.h" />

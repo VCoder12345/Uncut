@@ -8,13 +8,15 @@
 #include <QThread>
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_audio.h>
+#include <view/Uncut.h>
+#include <model/library/LibModel.h>
 
 class PreviewController : public QObject
 {
 	Q_OBJECT
 
 public:
-	PreviewController(PreviewView* previewView);
+	PreviewController(Uncut& window, LibModel* libModel);
 
 	~PreviewController();
 	

@@ -13,8 +13,14 @@ void LibController::onItemImport()
 	importItemFromFile(filePath);
 }
 
-LibController::LibController(LibModel* model) : model(model)
+LibController::LibController(Uncut& window, LibModel* model) : model(model)
 {
+	LibraryView* libView = window.getLibView();
+    libView->setModel(model);
+
+	QObject::connect(window.getImportAction(), &QAction::triggered, this, &LibController::onItemImport);
+    QObject::connect(libView, &LibraryView::filesDropped, this, &LibController::onFilesDropped);
+    QObject::connect(libView, &LibraryView::itemSelected, this, &LibController::onItemSelected);
 }
 
 void LibController::onFilesDropped(const QStringList& filePaths)

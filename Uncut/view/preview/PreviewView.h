@@ -23,6 +23,7 @@ public slots:
 
 private:
 	Ui::PreviewViewClass ui;
+	std::shared_ptr<VideoFrame> frame;
 	QImage img;
 
 protected:

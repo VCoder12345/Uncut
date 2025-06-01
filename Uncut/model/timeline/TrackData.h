@@ -1,0 +1,37 @@
+#pragma once
+#include "ClipData.h"
+#include <vector>
+
+class TrackData {
+public:
+	qreal y, height;
+	std::vector<ClipData*> clips;
+
+	TrackData(qreal y, qreal height) : y(y), height(height) {}
+
+	qreal getY() {
+		return y;
+	}
+
+	qreal getHeight() {
+		return height;
+	}
+
+	~TrackData() {
+		for (ClipData* clipData : clips) {
+			delete clipData;
+		}
+	}
+
+	void addClip(ClipData* clipData) {
+		//keep list sorted by startPts, insert via lower_bound = binary search
+		auto it = std::lower_bound(clips.begin(), clips.end(), clipData, [](ClipData* a, ClipData* b) { return a->startPts < b->startPts; });
+		
+		clipData->index = it - clips.begin();
+		clips.insert(it, clipData);
+	}
+
+	void removeClip(ClipData* clip) {
+		clips.erase(clip->index + clips.begin());
+	}
+};

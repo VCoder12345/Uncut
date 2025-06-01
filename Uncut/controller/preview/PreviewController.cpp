@@ -5,8 +5,11 @@ void PreviewController::onLibItemSelected(int oldSelected, int selected, const L
     playVideo(data->filePath);
 }
 
-PreviewController::PreviewController(PreviewView* previewView) : previewView(previewView)
+PreviewController::PreviewController(Uncut& window, LibModel* libModel) : previewView(window.getPreviewView())
 {
+    connect(libModel, &LibModel::itemSelected, this, &PreviewController::onLibItemSelected);
+    connect(window.getPlayBtn(), &QPushButton::clicked, this, &PreviewController::onPlayBtnClicked);
+
     SDL_Init(SDL_INIT_AUDIO);
 
     SDL_AudioSpec spec;
@@ -16,7 +19,7 @@ PreviewController::PreviewController(PreviewView* previewView) : previewView(pre
 
 	audioStream = SDL_OpenAudioDeviceStream(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, &spec, NULL, NULL);
 
-    vBuffer = new VideoStreamBuffer(1000);
+    vBuffer = new VideoStreamBuffer(100);
 }
 
 PreviewController::~PreviewController()

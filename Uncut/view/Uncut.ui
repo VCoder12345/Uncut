@@ -92,7 +92,11 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout"/>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="TlView" name="tlView"/>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -142,6 +146,11 @@
    <extends>QWidget</extends>
    <header>../view/library/LibraryView.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TlView</class>
+   <extends>QGraphicsView</extends>
+   <header>../view/timeline/TlView.h</header>
   </customwidget>
  </customwidgets>
  <resources>

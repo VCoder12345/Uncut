@@ -3,13 +3,14 @@
 #include "model/library/LibModel.h"
 #include <qstringlist.h>
 #include <services/decoder/VideoDecoder.h>
+#include <view/Uncut.h>
 
 class LibController : public QObject
 {
 	Q_OBJECT
 
 public:
-	LibController(LibModel* model);
+	LibController(Uncut& window, LibModel* model);
 
 	void importItemFromFile(const QString& filePath);
 	

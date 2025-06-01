@@ -53,6 +53,7 @@ public:
         if (bufferSize == 0 && reached_eof) return nullptr;
 
         std::shared_ptr<VideoFrame> front = buffer[headPointer];
+        buffer[headPointer] = nullptr;
         headPointer = (headPointer + 1) % maxSize;
         --bufferSize;
 
@@ -69,6 +70,9 @@ public:
 
     void clear() {
         QMutexLocker locker(&mutex);
+        for (int i = headPointer; i < tailPointer; ++i) {
+            buffer[i] = nullptr;
+        }
         bufferSize = 0;
         headPointer = 0;
         tailPointer = 0;

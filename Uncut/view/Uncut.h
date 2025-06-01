@@ -2,9 +2,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_Uncut.h"
-#include "model/library/LibModel.h"
-#include "controller/library/LibController.h"
-#include "controller/preview/PreviewController.h"
+#include "library/LibraryView.h"
+#include "preview/PreviewView.h"
 
 class Uncut : public QMainWindow
 {
@@ -14,14 +13,16 @@ public:
     Uncut(QWidget *parent = nullptr);
     ~Uncut();
 
+    QPushButton* getPlayBtn();
+
+    LibraryView* getLibView();
+    QAction* getImportAction();
+    PreviewView* getPreviewView();
+    TlView* getTlView();
+
 public slots:
     void onLoad();
 
 private:
     Ui::UncutClass ui;
-    LibModel* libModel;
-    LibController* libController;
-    PreviewController* previewController;
-
-    
 };

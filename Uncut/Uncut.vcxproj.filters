@@ -67,6 +67,21 @@
     <ClCompile Include="services\decoder\AudioDecoder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="model\timeline\TlModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="view\timeline\TlView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="view\timeline\ClipItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="view\timeline\TrackItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="controller\timeline\TlController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="view\preview\PreviewView.h">
@@ -91,6 +106,15 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="services\decoder\VideoDisplayWorker.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="model\timeline\TlModel.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="view\timeline\TlView.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="controller\timeline\TlController.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -122,6 +146,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="services\decoder\VideoStreamBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="model\timeline\ClipData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="model\timeline\TrackData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="view\timeline\TrackItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="view\timeline\ClipItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
