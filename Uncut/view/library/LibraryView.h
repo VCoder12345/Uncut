@@ -24,6 +24,7 @@ protected:
 	void dragMoveEvent(QDragMoveEvent* event) override;
 	void dropEvent(QDropEvent* event) override;
 	void mouseDoubleClickEvent(QMouseEvent* event) override;
+	void mousePressEvent(QMouseEvent* event) override;
 
 public slots:
 	void itemAdded(const LibItemData* data);
@@ -32,6 +33,7 @@ public slots:
 signals:
 	void filesDropped(const QStringList& filePaths);
 	void itemSelected(int selected, const LibItemData* data);
+	void itemPressed(int selected, const LibItemData* data);
 
 private:
 	Ui::LibraryViewClass ui;

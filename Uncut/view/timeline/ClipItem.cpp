@@ -18,7 +18,6 @@ void ClipItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, 
 	painter->setOpacity(opacity);
 	painter->fillRect(boundingRect(), QBrush(Qt::blue));
 
-
 	if (data->selected) {
 		painter->setPen(QPen(Qt::red));
 		painter->drawRect(boundingRect());

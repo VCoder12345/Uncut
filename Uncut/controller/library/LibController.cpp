@@ -3,6 +3,8 @@
 #include <qfiledialog.h>
 #include <qstandardpaths.h>
 #include <utils/TimeHelper.h>
+#include <QMimeData>
+#include <QDrag>
 
 void LibController::onItemImport()
 {
@@ -21,6 +23,7 @@ LibController::LibController(Uncut& window, LibModel* model) : model(model)
 	QObject::connect(window.getImportAction(), &QAction::triggered, this, &LibController::onItemImport);
     QObject::connect(libView, &LibraryView::filesDropped, this, &LibController::onFilesDropped);
     QObject::connect(libView, &LibraryView::itemSelected, this, &LibController::onItemSelected);
+	connect(libView, &LibraryView::itemPressed, this, &LibController::onItemPressed);
 }
 
 void LibController::onFilesDropped(const QStringList& filePaths)
@@ -33,6 +36,21 @@ void LibController::onFilesDropped(const QStringList& filePaths)
 void LibController::onItemSelected(int selected, const LibItemData* data)
 {
 	model->setSelectedItem(selected);
+}
+
+void LibController::onItemPressed(int selected, const LibItemData* data)
+{
+	QByteArray dropData;
+	QDataStream dropStream(&dropData, QIODevice::WriteOnly);
+	dropStream << data->filePath;
+	
+	QMimeData* mimeData = new QMimeData;
+	mimeData->setData("application/x-libitemdata", dropData);
+	QDrag* drag = new QDrag(this);
+	drag->setMimeData(mimeData);
+	drag->setPixmap(QPixmap::fromImage(data->previewFrame->toImage().scaledToHeight(30)));
+
+	drag->exec(Qt::CopyAction);
 }
 
 

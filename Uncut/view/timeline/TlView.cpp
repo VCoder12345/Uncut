@@ -1,4 +1,7 @@
 #include "TlView.h"
+
+#include <QMimeData>
+
 #include "TrackItem.h"
 #include <QMouseEvent>
 
@@ -9,7 +12,7 @@ TlView::TlView(QWidget *parent)
 	setScene(scene);
 
 	setAlignment(Qt::AlignLeft | Qt::AlignTop);
-
+	setAcceptDrops(true);
 } 
 
 TlView::~TlView()
@@ -57,20 +60,74 @@ void TlView::scrollContentsBy(int dx, int dy)
 
 void TlView::mouseMoveEvent(QMouseEvent* event)
 {
-	emit mouseMoved(event);
+	if (slcClipItem) {
+		QPointF newPos =  mapToScene(event->pos()) + QPointF(dragOffset.x(), 0);
+		emit requestMovingClip(slcClipItem, newPos);
+	}
 	QGraphicsView::mouseMoveEvent(event);
 }
 
 void TlView::mousePressEvent(QMouseEvent* event)
 {
-	emit mousePressed(event);
+	ClipItem* clipItem = dynamic_cast<ClipItem*>(itemAt(event->pos()));
+
+	if (clipItem)
+	{
+		slcClipItem = clipItem->shallowCopy();
+		slcClipItem->setOpacity(0.5);
+		scene->addItem(slcClipItem);
+
+		dragOffset = clipItem->pos() - mapToScene(event->pos());
+		emit requestClipSelect(clipItem->data);
+	}
 	QGraphicsView::mousePressEvent(event);
 }
 
 void TlView::mouseReleaseEvent(QMouseEvent* event)
 {
-	emit mouseReleased(event);
+	if (slcClipItem) {
+		double newPos = slcClipItem->x() / (double) wps;
+
+		emit clipItemMoved(slcClipItem, newPos);
+
+		scene->removeItem(slcClipItem);
+		delete slcClipItem;
+		slcClipItem = nullptr;
+	}
 	QGraphicsView::mouseReleaseEvent(event);
+}
+
+void TlView::dragEnterEvent(QDragEnterEvent* event)
+{
+	QGraphicsView::dragEnterEvent(event);
+	qDebug() << "hullo";
+	if (event->mimeData()->hasFormat("application/x-libitemdata"))
+	{
+		event->acceptProposedAction();
+		emit newClipFromDrag(event->mimeData());
+	} else
+	{
+		event->ignore();
+	}
+}
+
+void TlView::dragMoveEvent(QDragMoveEvent* event)
+{
+	QGraphicsView::dragMoveEvent(event);
+	if (event->mimeData()->hasFormat("application/x-libitemdata"))
+	{
+		event->acceptProposedAction();
+		emit newClipFromDrag(event->mimeData());
+	} else
+	{
+		event->ignore();
+	}
+}
+
+void TlView::dropEvent(QDropEvent* event)
+{
+	QGraphicsView::dropEvent(event);
+	event->acceptProposedAction();
 }
 
 void TlView::updateTrackWidths()

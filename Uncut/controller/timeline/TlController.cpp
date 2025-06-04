@@ -13,59 +13,57 @@ TlController::TlController(Uncut& window, TlModel* model) : model(model), tlView
 	model->addClip(new ClipData(nullptr, "", 0, 1.0, 0.0), 0);
 	model->addClip(new ClipData(nullptr, "", 0, 4.0, 0.0), 2);
 
-	connect(tlView, &TlView::mouseMoved, this, &TlController::onMouseMoved);
-	connect(tlView, &TlView::mousePressed, this, &TlController::onMousePressed);
-	connect(tlView, &TlView::mouseReleased, this, &TlController::onMouseReleased);
+	connect(tlView, &TlView::requestMovingClip, this, &TlController::onMovingClipRequested);
+	connect(tlView, &TlView::clipItemMoved, this, &TlController::onClipItemMoved);
+	connect(tlView, &TlView::requestClipSelect, this, &TlController::onClipSelectRequested);
+	connect(tlView, &TlView::newClipFromDrag, this, &TlController::onNewClipFromDrag);
 }
 
-void TlController::onMousePressed(QMouseEvent* event)
+
+
+
+void TlController::onMovingClipRequested(ClipItem* clipItem, QPointF newPos)
 {
-	ClipItem* clipItem = dynamic_cast<ClipItem*>(tlView->itemAt(event->pos()));
-	
-	if (clipItem) {
-		slcClipItem = clipItem->shallowCopy(); 
-		slcClipItem->setOpacity(0.5);
-		tlView->scene->addItem(slcClipItem);
-
-		dragOffset = clipItem->pos() - tlView->mapToScene(event->pos());
-		slcTrack = clipItem->data->trackIndex;
-		model->select(clipItem->data);
-	}
-	
+	clipItem->setPos(snapToTracks(newPos).first);
 }
 
-void TlController::onMouseReleased(QMouseEvent* event)
+void TlController::onClipItemMoved(ClipItem* item, double newPos)
 {
-	if (slcClipItem) {
-		double newPos = slcClipItem->x() / (double)tlView->wps;
-		model->moveClip(slcClipItem->data, newPos, slcTrack);
-
-		qDebug() << slcClipItem->data->pos << slcClipItem->data->trackIndex;
-		tlView->scene->removeItem(slcClipItem);
-		delete slcClipItem;
-		slcClipItem = nullptr;
-	}
+	model->moveClip(item->data, newPos, snapToTracks(item->pos()).second);
 }
 
-QPointF TlController::snapToTracks(const QPointF& pos)
+
+
+void TlController::onClipSelectRequested(ClipData* data)
+{
+	model->select(data);
+}
+
+void TlController::onNewClipFromDrag(const QMimeData* mimeData)
+{
+	QByteArray itemData = mimeData->data("application/x-libitemdata");
+	QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+
+	QString filePath;
+	dataStream >> filePath;
+
+	
+}
+
+std::pair<QPointF, int> TlController::snapToTracks(const QPointF& pos)
 {
 	qreal py = pos.y();
+	int track = -1;
 	for (int i = 0; i < model->tracks.size(); ++i) {
 		qreal y = model->tracks[i]->getY();
 		if (py >= y && py < y + model->tracks[i]->getHeight()) {
 			py = y;
-			slcTrack = i;
+			track = i;
 			break;
 		}
 	}
 
-	return QPointF(pos.x(), py);
+	return { QPointF(pos.x(), py), track };
 }
 
-void TlController::onMouseMoved(QMouseEvent* event) {
-	if (slcClipItem) {
-		QPointF newPos =  tlView->mapToScene(event->pos()) + QPointF(dragOffset.x(), 0);
-		slcClipItem->setPos(snapToTracks(newPos));
-	}
-}
 

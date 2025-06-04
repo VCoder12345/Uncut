@@ -27,11 +27,10 @@ public:
 		//keep list sorted by startPts, insert via lower_bound = binary search
 		auto it = std::lower_bound(clips.begin(), clips.end(), clipData, [](ClipData* a, ClipData* b) { return a->startPts < b->startPts; });
 		
-		clipData->index = it - clips.begin();
 		clips.insert(it, clipData);
 	}
 
 	void removeClip(ClipData* clip) {
-		clips.erase(clip->index + clips.begin());
+		clips.erase(std::find(clips.begin(), clips.end(), clip));
 	}
 };

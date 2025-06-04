@@ -19,6 +19,7 @@ public slots:
 	void onItemImport();
 	void onFilesDropped(const QStringList& filePaths);
 	void onItemSelected(int selected, const LibItemData* data);
+	void onItemPressed(int selected, const LibItemData* data);
 
 private:
 	LibModel* model;

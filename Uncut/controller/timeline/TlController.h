@@ -3,6 +3,7 @@
 #include <view/Uncut.h>
 #include <view/timeline/TlView.h>
 #include <QObject>
+#include <QMimeData>
 
 class TlController : public QObject
 {
@@ -11,18 +12,16 @@ public:
 	TlController(Uncut& window, TlModel* model);
 
 public slots:
-	void onMouseMoved(QMouseEvent* event);
-	void onMousePressed(QMouseEvent* event);
-	void onMouseReleased(QMouseEvent* event);
+	void onMovingClipRequested(ClipItem* clipItem, QPointF newPos);
+	void onClipItemMoved(ClipItem* item, double newPos);
+	void onClipSelectRequested(ClipData* data);
+	void onNewClipFromDrag(const QMimeData* mimeData);
 
 private:
 	TlView* tlView;
 	TlModel* model;
-	ClipItem* slcClipItem = nullptr;
-	QPointF	dragOffset;
-	int slcTrack;
 
 
-	QPointF snapToTracks(const QPointF& pos);
+	std::pair<QPointF, int> snapToTracks(const QPointF& pos);
 };
 

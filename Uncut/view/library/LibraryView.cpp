@@ -84,6 +84,18 @@ void LibraryView::mouseDoubleClickEvent(QMouseEvent* event)
 	QGraphicsView::mouseDoubleClickEvent(event);
 }
 
+void LibraryView::mousePressEvent(QMouseEvent* event)
+{
+	LibItem* item = static_cast<LibItem*>(itemAt(event->pos()));
+
+	if (item) {
+		int selected = item->index;
+		emit itemPressed(selected, item->data);
+	}
+
+	QGraphicsView::mousePressEvent(event);
+}
+
 void LibraryView::onItemSelect(int oldSelected, int selected, const LibItemData* data)
 {
 	if(oldSelected >= 0)
