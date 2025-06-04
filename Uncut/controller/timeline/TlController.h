@@ -13,15 +13,12 @@ public:
 
 public slots:
 	void onMovingClipRequested(ClipItem* clipItem, QPointF newPos);
-	void onClipItemMoved(ClipItem* item, double newPos);
+	void onClipItemMoved(ClipData* data, double newPos, int newTrack);
 	void onClipSelectRequested(ClipData* data);
 	void onNewClipFromDrag(const QMimeData* mimeData);
 
 private:
 	TlView* tlView;
 	TlModel* model;
-
-
-	std::pair<QPointF, int> snapToTracks(const QPointF& pos);
 };
 

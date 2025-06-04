@@ -21,14 +21,7 @@ void TlModel::addClip(ClipData* clipData, int trackIndex) {
 
 void TlModel::addTrack()
 {
-	qreal y;
-	if (tracks.size() > 0) {
-		TrackData* lastTrack = tracks.back();
-		y = lastTrack->y + lastTrack->height;
-	} 
-	else
-		y = 0;
-	TrackData* data = new TrackData(y, defaultTrackHeight);
+	TrackData* data = new TrackData();
 	tracks.push_back(data);
 	emit trackAdded(data);
 }

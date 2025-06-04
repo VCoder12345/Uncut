@@ -31,7 +31,7 @@ void TlView::setModel(TlModel* model)
 
 void TlView::onClipAdded(ClipData* data, int trackIndex) {
 	TrackItem* track = tracks[trackIndex];
-	ClipItem* clipItem = new ClipItem(data, wps, track->getClipHeight());
+	ClipItem* clipItem = new ClipItem(data, wps, track->getHeight());
 	clips.push_back(clipItem);
 
 	scene->addItem(clipItem);
@@ -62,7 +62,7 @@ void TlView::mouseMoveEvent(QMouseEvent* event)
 {
 	if (slcClipItem) {
 		QPointF newPos =  mapToScene(event->pos()) + QPointF(dragOffset.x(), 0);
-		emit requestMovingClip(slcClipItem, newPos);
+		slcClipItem->setPos(snapToTracks(newPos).first);
 	}
 	QGraphicsView::mouseMoveEvent(event);
 }
@@ -88,7 +88,7 @@ void TlView::mouseReleaseEvent(QMouseEvent* event)
 	if (slcClipItem) {
 		double newPos = slcClipItem->x() / (double) wps;
 
-		emit clipItemMoved(slcClipItem, newPos);
+		emit clipItemMoved(slcClipItem->data, newPos, snapToTracks(slcClipItem->pos()).second);
 
 		scene->removeItem(slcClipItem);
 		delete slcClipItem;
@@ -140,10 +140,19 @@ void TlView::updateTrackWidths()
 
 void TlView::addTrack(TrackData* data)
 {
-	TrackItem* trackItem = new TrackItem(data);
+	qreal y;
+	if (tracks.size() > 0)
+	{
+		TrackItem* lastTrack = tracks.back();
+		y = lastTrack->getY() + lastTrack->getHeight();
+	}else
+	{
+		y = 0;
+	}
+	TrackItem* trackItem = new TrackItem(data, y, defaultTrackHeight);
 	tracks.push_back(trackItem);
 	scene->addItem(trackItem);
-	trackItem->setPos(0, data->getY());
+	trackItem->setPos(0, y);
 
 	updateTrackWidths();
 }
@@ -159,4 +168,20 @@ void TlView::updateClipPositions()
 	for (ClipItem* clipItem : clips) {
 		clipItem->setPos(wps * clipItem->data->pos, tracks[clipItem->data->trackIndex]->getY());
 	}
+}
+
+std::pair<QPointF, int> TlView::snapToTracks(const QPointF& pos)
+{
+	qreal py = pos.y();
+	int track = -1;
+	for (int i = 0; i < tracks.size(); ++i) {
+		qreal y = tracks[i]->getY();
+		if (py >= y && py < y + tracks[i]->getHeight()) {
+			py = y;
+			track = i;
+			break;
+		}
+	}
+
+	return { QPointF(pos.x(), py), track };
 }

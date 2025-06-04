@@ -4,18 +4,8 @@
 
 class TrackData {
 public:
-	qreal y, height;
 	std::vector<ClipData*> clips;
 
-	TrackData(qreal y, qreal height) : y(y), height(height) {}
-
-	qreal getY() {
-		return y;
-	}
-
-	qreal getHeight() {
-		return height;
-	}
 
 	~TrackData() {
 		for (ClipData* clipData : clips) {

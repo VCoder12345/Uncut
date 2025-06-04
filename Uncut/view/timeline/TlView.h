@@ -14,6 +14,8 @@ class TlView  : public QGraphicsView
 public:
 	int wps = 100;
 	QGraphicsScene* scene;
+	qreal defaultTrackHeight = 100;
+
 
 	TlView(QWidget *parent);
 	~TlView();
@@ -24,8 +26,7 @@ signals:
 	void mouseMoved(QMouseEvent* event);
 	void mousePressed(QMouseEvent* event);
 	void mouseReleased(QMouseEvent* event); 
-	void requestMovingClip(ClipItem* clipItem, QPointF pointF);
-	void clipItemMoved(ClipItem* item, double newPos);
+	void clipItemMoved(ClipData* data, double newPos, int newTrack);
 	void requestClipSelect(ClipData* data);
 	void newClipFromDrag(const QMimeData* mimeData);
 
@@ -56,4 +57,5 @@ private:
 	void addTrack(TrackData* data);
 	TrackItem* lastTrack();
 	void updateClipPositions();
+	std::pair<QPointF, int> snapToTracks(const QPointF& pos);
 };
