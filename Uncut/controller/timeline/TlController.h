@@ -10,10 +10,12 @@ class TlController : public QObject
 	Q_OBJECT
 public:
 	TlController(Uncut& window, TlModel* model);
+	void removeUnusedTracks();
 
 public slots:
 	void onClipItemMoved(ClipData* data, double newPos, int newTrack, bool clipExists);
 	void onClipSelectRequested(ClipData* data);
+	void onDeleteKeyPressed();
 
 private:
 	TlView* tlView;

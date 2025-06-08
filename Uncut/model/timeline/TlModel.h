@@ -23,6 +23,8 @@ public:
 	void addSelect(ClipData* clip);
 	void moveClip(ClipData* clip, double newPos, int newTrackIndex);
 	void removeLastTrack();
+	void removeSelection();
+	void removeClip(ClipData* clipData);
 
 
 signals:
@@ -31,6 +33,7 @@ signals:
 	void clipsSelected();
 	void clipMoved();
 	void lastTrackRemoved();
+	void clipRemoved(ClipData* slcClip);
 
 private:
 	qreal defaultTrackHeight = 100;

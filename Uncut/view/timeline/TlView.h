@@ -31,12 +31,14 @@ signals:
 	void requestClipSelect(ClipData* data);
 	void newClipFromDrag(QDragEnterEvent* event);
 	void clipImported(ClipData* data, int trackIndex);
+	void deleteKeyPressed();
 
 public slots:
 	void onClipAdded(ClipData* data, int trackIndex);
 	void onClipsSelected();
 	void addTrack(TrackData* data);
 	void onLastTrackRemoved();
+	void onClipRemoved(ClipData* data);
 
 
 protected:
@@ -52,9 +54,10 @@ protected:
 	void dragMoveEvent(QDragMoveEvent* event) override;
 	void dropEvent(QDropEvent* event) override;
 	void dragLeaveEvent(QDragLeaveEvent* event) override;
+	void keyPressEvent(QKeyEvent* event) override;
 
 private:
-	std::vector<ClipItem*> clips;
+	QHash<ClipData*, ClipItem*> clips;
 	std::vector<TrackItem*> tracks;
 	TlModel* model = nullptr;
 	ClipItem* slcClipItem = nullptr;

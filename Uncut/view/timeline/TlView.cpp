@@ -27,6 +27,7 @@ void TlView::setModel(TlModel* model)
 	connect(model, &TlModel::trackAdded, this, &TlView::addTrack);
 	connect(model, &TlModel::lastTrackRemoved, this, &TlView::onLastTrackRemoved);
 	connect(model, &TlModel::clipsSelected, this, &TlView::onClipsSelected);
+	connect(model, &TlModel::clipRemoved, this, &TlView::onClipRemoved);
 	connect(model, &TlModel::clipMoved, this, &TlView::updateClipPositions);
 }
 
@@ -43,7 +44,7 @@ ClipItem* TlView::addClipToScene(ClipData* data, int trackIndex)
 
 void TlView::onClipAdded(ClipData* data, int trackIndex) {
 	ClipItem* clipItem = addClipToScene(data, trackIndex);
-	clips.push_back(clipItem);
+	clips.insert(data, clipItem);
 }
 
 
@@ -176,6 +177,25 @@ void TlView::dragLeaveEvent(QDragLeaveEvent* event)
 	cleanupSelec();
 }
 
+void TlView::keyPressEvent(QKeyEvent* event)
+{
+	switch (event->key())
+	{
+	case Qt::Key_Escape:
+		if (slcClipItem)
+		{
+			cleanupSelec();
+		}
+		break;
+
+	case Qt::Key_Delete:
+		emit deleteKeyPressed();
+		break;
+	default:
+		QGraphicsView::keyPressEvent(event);
+	}
+}
+
 void TlView::updateTrackWidths()
 {
 	QRectF visibleRegion = mapToScene(viewport()->rect()).boundingRect();
@@ -210,6 +230,15 @@ void TlView::onLastTrackRemoved()
 	scene->removeItem(lastTrackItem);
 	tracks.pop_back();
 	delete lastTrackItem;
+}
+
+void TlView::onClipRemoved(ClipData* data)
+{
+	cleanupSelec();
+	ClipItem* clipItem = clips.value(data);
+	scene->removeItem(clipItem);
+	clips.remove(data);
+	delete clipItem;
 }
 
 TrackItem* TlView::lastTrack()

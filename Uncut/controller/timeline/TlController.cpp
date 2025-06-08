@@ -15,9 +15,24 @@ TlController::TlController(Uncut& window, TlModel* model) : model(model), tlView
 
 	connect(tlView, &TlView::clipItemMoved, this, &TlController::onClipItemMoved);
 	connect(tlView, &TlView::requestClipSelect, this, &TlController::onClipSelectRequested);
+	connect(tlView, &TlView::deleteKeyPressed, this, &TlController::onDeleteKeyPressed);
 }
 
-
+//remove unused tracks that are above the last used one and keeps always at least one track
+void TlController::removeUnusedTracks()
+{
+	for (int i = model->tracks.size() - 1; i >= 1; --i)
+	{
+		if (model->tracks[i]->clips.size() == 0)
+		{
+			model->removeLastTrack();
+		}
+		else
+		{
+			break;
+		}
+	}
+}
 
 
 void TlController::onClipItemMoved(ClipData* data, double newPos, int newTrack, bool clipExists)
@@ -30,17 +45,7 @@ void TlController::onClipItemMoved(ClipData* data, double newPos, int newTrack, 
 	if (clipExists)
 	{
 		model->moveClip(data, newPos, newTrack);
-		for (int i = model->tracks.size() - 1; i >= 0; --i)
-		{
-			if (model->tracks[i]->clips.size() == 0)
-			{
-				model->removeLastTrack();
-			}
-			else
-			{
-				break;
-			}
-		}
+		removeUnusedTracks();
 	}
 	else
 	{
@@ -55,6 +60,14 @@ void TlController::onClipItemMoved(ClipData* data, double newPos, int newTrack, 
 void TlController::onClipSelectRequested(ClipData* data)
 {
 	model->select(data);
+}
+
+void TlController::onDeleteKeyPressed()
+{
+	if (model->slcClip)
+		model->removeSelection();
+
+	removeUnusedTracks();
 }
 
 

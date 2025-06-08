@@ -52,7 +52,7 @@ void TlModel::addSelect(ClipData* clip)
 
 void TlModel::moveClip(ClipData* clip, double newPos, int newTrackIndex)
 {
-	tracks[clip->trackIndex]->removeClip(clip);
+	removeClip(clip);
 	clip->trackIndex = newTrackIndex;
 	clip->pos = newPos;
 	
@@ -65,5 +65,18 @@ void TlModel::removeLastTrack()
 	delete tracks.back();
 	tracks.pop_back();
 	emit lastTrackRemoved();
+}
+
+void TlModel::removeSelection()
+{
+	emit clipRemoved(slcClip);
+	removeClip(slcClip);
+	slcClip = nullptr;
+}
+
+void TlModel::removeClip(ClipData* clipData)
+{
+
+	tracks[clipData->trackIndex]->removeClip(clipData);
 }
 
