@@ -1,7 +1,7 @@
 #include "ClipItem.h"
 #include <QPainter>
 
-ClipItem::ClipItem(ClipData* data, int wps, int height, double opacity) : data(data), wps(wps), height(height), opacity(opacity)
+ClipItem::ClipItem(ClipData* data, double wps, int height, double opacity) : data(data), wps(wps), height(height), opacity(opacity)
 {
 	setZValue(5);
 }

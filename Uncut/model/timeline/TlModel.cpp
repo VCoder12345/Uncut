@@ -60,3 +60,10 @@ void TlModel::moveClip(ClipData* clip, double newPos, int newTrackIndex)
 	emit clipMoved();
 }
 
+void TlModel::removeLastTrack()
+{
+	delete tracks.back();
+	tracks.pop_back();
+	emit lastTrackRemoved();
+}
+

@@ -12,7 +12,7 @@ class ClipItem  : public QGraphicsItem
 public:
 	ClipData* data;
 
-	ClipItem(ClipData* data, int wps, int height, double opacity = 1.0);
+	ClipItem(ClipData* data, double wps, int height, double opacity = 1.0);
 	~ClipItem();
 
 	ClipItem* shallowCopy() {
@@ -30,7 +30,7 @@ protected:
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
-	int wps;
+	double wps;
 	int height;
 	double opacity;
 };

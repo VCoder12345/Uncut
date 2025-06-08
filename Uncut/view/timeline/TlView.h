@@ -12,7 +12,7 @@ class TlView  : public QGraphicsView
 	Q_OBJECT
 
 public:
-	int wps = 100;
+	double wps = 100;
 	QGraphicsScene* scene;
 	qreal defaultTrackHeight = 100;
 
@@ -21,6 +21,7 @@ public:
 	~TlView();
 
 	void setModel(TlModel* model);
+	ClipItem* addClipToScene(ClipData* data, int trackIndex);
 
 signals:
 	void mouseMoved(QMouseEvent* event);
@@ -28,16 +29,20 @@ signals:
 	void mouseReleased(QMouseEvent* event); 
 	void clipItemMoved(ClipData* data, double newPos, int newTrack);
 	void requestClipSelect(ClipData* data);
-	void newClipFromDrag(const QMimeData* mimeData);
+	void newClipFromDrag(QDragEnterEvent* event);
+	void clipImported(ClipData* data, int trackIndex);
 
 public slots:
 	void onClipAdded(ClipData* data, int trackIndex);
 	void onClipsSelected();
+	void addTrack(TrackData* data);
+	void onLastTrackRemoved();
 
 
 protected:
 	void resizeEvent(QResizeEvent* event) override;
 	void scrollContentsBy(int dx, int dy) override;
+	void moveSelec(const QPointF& pos);
 	void mouseMoveEvent(QMouseEvent* event) override;
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseReleaseEvent(QMouseEvent* event) override;
@@ -54,8 +59,8 @@ private:
 
 
 	void updateTrackWidths();
-	void addTrack(TrackData* data);
 	TrackItem* lastTrack();
+	void updateClipPos(ClipItem* clipItem);
 	void updateClipPositions();
 	std::pair<QPointF, int> snapToTracks(const QPointF& pos);
 };

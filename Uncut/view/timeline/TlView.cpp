@@ -5,15 +5,15 @@
 #include "TrackItem.h"
 #include <QMouseEvent>
 
-TlView::TlView(QWidget *parent)
+TlView::TlView(QWidget* parent)
 	: QGraphicsView(parent)
 {
 	scene = new QGraphicsScene(this);
 	setScene(scene);
 
-	setAlignment(Qt::AlignLeft | Qt::AlignTop);
+	setAlignment(Qt::AlignLeft | Qt::AlignCenter);
 	setAcceptDrops(true);
-} 
+}
 
 TlView::~TlView()
 {
@@ -22,20 +22,28 @@ TlView::~TlView()
 void TlView::setModel(TlModel* model)
 {
 	this->model = model;
-	
+
 	connect(model, &TlModel::clipAdded, this, &TlView::onClipAdded);
 	connect(model, &TlModel::trackAdded, this, &TlView::addTrack);
+	connect(model, &TlModel::lastTrackRemoved, this, &TlView::onLastTrackRemoved);
 	connect(model, &TlModel::clipsSelected, this, &TlView::onClipsSelected);
 	connect(model, &TlModel::clipMoved, this, &TlView::updateClipPositions);
 }
 
-void TlView::onClipAdded(ClipData* data, int trackIndex) {
+ClipItem* TlView::addClipToScene(ClipData* data, int trackIndex)
+{
 	TrackItem* track = tracks[trackIndex];
 	ClipItem* clipItem = new ClipItem(data, wps, track->getHeight());
-	clips.push_back(clipItem);
 
 	scene->addItem(clipItem);
-	updateClipPositions();
+	updateClipPos(clipItem);
+
+	return clipItem;
+}
+
+void TlView::onClipAdded(ClipData* data, int trackIndex) {
+	ClipItem* clipItem = addClipToScene(data, trackIndex);
+	clips.push_back(clipItem);
 }
 
 
@@ -46,7 +54,7 @@ void TlView::onClipsSelected()
 	}
 }
 
-void TlView::resizeEvent(QResizeEvent * event)
+void TlView::resizeEvent(QResizeEvent* event)
 {
 	QGraphicsView::resizeEvent(event);
 	updateTrackWidths();
@@ -58,10 +66,17 @@ void TlView::scrollContentsBy(int dx, int dy)
 	updateTrackWidths();
 }
 
+void TlView::moveSelec(const QPointF& pos)
+{
+	QPointF newPos = pos + QPointF(dragOffset.x(), 0);
+	slcClipItem->setPos(snapToTracks(newPos).first);
+
+}
+
 void TlView::mouseMoveEvent(QMouseEvent* event)
 {
 	if (slcClipItem) {
-		QPointF newPos =  mapToScene(event->pos()) + QPointF(dragOffset.x(), 0);
+		QPointF newPos = mapToScene(event->pos()) + QPointF(dragOffset.x(), 0);
 		slcClipItem->setPos(snapToTracks(newPos).first);
 	}
 	QGraphicsView::mouseMoveEvent(event);
@@ -86,7 +101,7 @@ void TlView::mousePressEvent(QMouseEvent* event)
 void TlView::mouseReleaseEvent(QMouseEvent* event)
 {
 	if (slcClipItem) {
-		double newPos = slcClipItem->x() / (double) wps;
+		double newPos = slcClipItem->x() / wps;
 
 		emit clipItemMoved(slcClipItem->data, newPos, snapToTracks(slcClipItem->pos()).second);
 
@@ -104,8 +119,20 @@ void TlView::dragEnterEvent(QDragEnterEvent* event)
 	if (event->mimeData()->hasFormat("application/x-libitemdata"))
 	{
 		event->acceptProposedAction();
-		emit newClipFromDrag(event->mimeData());
-	} else
+		QByteArray itemData = event->mimeData()->data("application/x-libitemdata");
+		QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+
+		QString filePath;
+		dataStream >> filePath;
+
+		double clipPos = event->position().x() / wps;
+		ClipData* data = new ClipData(nullptr, filePath, 0, 2, clipPos);
+		slcClipItem = new ClipItem(data, wps, defaultTrackHeight, 0.5);
+		scene->addItem(slcClipItem);
+		slcClipItem->setPos(event->position());
+		dragOffset = QPointF(0, 0);
+	}
+	else
 	{
 		event->ignore();
 	}
@@ -117,8 +144,8 @@ void TlView::dragMoveEvent(QDragMoveEvent* event)
 	if (event->mimeData()->hasFormat("application/x-libitemdata"))
 	{
 		event->acceptProposedAction();
-		emit newClipFromDrag(event->mimeData());
-	} else
+	}
+	else
 	{
 		event->ignore();
 	}
@@ -144,8 +171,9 @@ void TlView::addTrack(TrackData* data)
 	if (tracks.size() > 0)
 	{
 		TrackItem* lastTrack = tracks.back();
-		y = lastTrack->getY() + lastTrack->getHeight();
-	}else
+		y = lastTrack->getY() - defaultTrackHeight;
+	}
+	else
 	{
 		y = 0;
 	}
@@ -157,16 +185,29 @@ void TlView::addTrack(TrackData* data)
 	updateTrackWidths();
 }
 
+void TlView::onLastTrackRemoved()
+{
+	TrackItem* lastTrackItem = tracks.back();
+	scene->removeItem(lastTrackItem);
+	tracks.pop_back();
+	delete lastTrackItem;
+}
+
 TrackItem* TlView::lastTrack()
 {
 	if (tracks.size() == 0) return nullptr;
 	return tracks[tracks.size() - 1];
 }
 
+void TlView::updateClipPos(ClipItem* clipItem)
+{
+	clipItem->setPos(wps * clipItem->data->pos, tracks[clipItem->data->trackIndex]->getY());
+}
+
 void TlView::updateClipPositions()
 {
 	for (ClipItem* clipItem : clips) {
-		clipItem->setPos(wps * clipItem->data->pos, tracks[clipItem->data->trackIndex]->getY());
+		updateClipPos(clipItem);
 	}
 }
 
@@ -181,6 +222,11 @@ std::pair<QPointF, int> TlView::snapToTracks(const QPointF& pos)
 			track = i;
 			break;
 		}
+	}
+
+	if (track < 0) {
+		py = tracks.back()->getY() - defaultTrackHeight;
+		track = tracks.size();
 	}
 
 	return { QPointF(pos.x(), py), track };

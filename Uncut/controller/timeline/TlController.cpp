@@ -3,7 +3,7 @@
 TlController::TlController(Uncut& window, TlModel* model) : model(model), tlView(window.getTlView())
 {
 	tlView->setModel(model);
-	
+
 	model->addTrack();
 	model->addTrack();
 	model->addTrack();
@@ -15,7 +15,6 @@ TlController::TlController(Uncut& window, TlModel* model) : model(model), tlView
 
 	connect(tlView, &TlView::clipItemMoved, this, &TlController::onClipItemMoved);
 	connect(tlView, &TlView::requestClipSelect, this, &TlController::onClipSelectRequested);
-	connect(tlView, &TlView::newClipFromDrag, this, &TlController::onNewClipFromDrag);
 }
 
 
@@ -27,7 +26,24 @@ void TlController::onMovingClipRequested(ClipItem* clipItem, QPointF newPos)
 
 void TlController::onClipItemMoved(ClipData* data, double newPos, int newTrack)
 {
+	if (newTrack >= model->tracks.size())
+	{
+		model->addTrack();
+	}
+
+
 	model->moveClip(data, newPos, newTrack);
+	for (int i = model->tracks.size() - 1; i >= 0; --i)
+	{
+		if (model->tracks[i]->clips.size() == 0)
+		{
+			model->removeLastTrack();
+		}
+		else
+		{
+			break;
+		}
+	}
 }
 
 
@@ -37,16 +53,7 @@ void TlController::onClipSelectRequested(ClipData* data)
 	model->select(data);
 }
 
-void TlController::onNewClipFromDrag(const QMimeData* mimeData)
-{
-	QByteArray itemData = mimeData->data("application/x-libitemdata");
-	QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
-	QString filePath;
-	dataStream >> filePath;
-
-	
-}
 
 
 

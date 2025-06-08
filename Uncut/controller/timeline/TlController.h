@@ -15,7 +15,6 @@ public slots:
 	void onMovingClipRequested(ClipItem* clipItem, QPointF newPos);
 	void onClipItemMoved(ClipData* data, double newPos, int newTrack);
 	void onClipSelectRequested(ClipData* data);
-	void onNewClipFromDrag(const QMimeData* mimeData);
 
 private:
 	TlView* tlView;
