@@ -27,7 +27,7 @@ signals:
 	void mouseMoved(QMouseEvent* event);
 	void mousePressed(QMouseEvent* event);
 	void mouseReleased(QMouseEvent* event); 
-	void clipItemMoved(ClipData* data, double newPos, int newTrack);
+	void clipItemMoved(ClipData* data, double newPos, int newTrack, bool clipExists);
 	void requestClipSelect(ClipData* data);
 	void newClipFromDrag(QDragEnterEvent* event);
 	void clipImported(ClipData* data, int trackIndex);
@@ -42,13 +42,16 @@ public slots:
 protected:
 	void resizeEvent(QResizeEvent* event) override;
 	void scrollContentsBy(int dx, int dy) override;
-	void moveSelec(const QPointF& pos);
+	void moveSelec(const QPoint& mousePos);
 	void mouseMoveEvent(QMouseEvent* event) override;
+	void putSelec(bool clipExists);
+	void cleanupSelec();
 	void mousePressEvent(QMouseEvent* event) override;
 	void mouseReleaseEvent(QMouseEvent* event) override;
 	void dragEnterEvent(QDragEnterEvent* event) override;
 	void dragMoveEvent(QDragMoveEvent* event) override;
 	void dropEvent(QDropEvent* event) override;
+	void dragLeaveEvent(QDragLeaveEvent* event) override;
 
 private:
 	std::vector<ClipItem*> clips;

@@ -66,9 +66,9 @@ void TlView::scrollContentsBy(int dx, int dy)
 	updateTrackWidths();
 }
 
-void TlView::moveSelec(const QPointF& pos)
+void TlView::moveSelec(const QPoint& mousePos)
 {
-	QPointF newPos = pos + QPointF(dragOffset.x(), 0);
+	QPointF newPos = mapToScene(mousePos) + QPointF(dragOffset.x(), 0);
 	slcClipItem->setPos(snapToTracks(newPos).first);
 
 }
@@ -76,10 +76,25 @@ void TlView::moveSelec(const QPointF& pos)
 void TlView::mouseMoveEvent(QMouseEvent* event)
 {
 	if (slcClipItem) {
-		QPointF newPos = mapToScene(event->pos()) + QPointF(dragOffset.x(), 0);
-		slcClipItem->setPos(snapToTracks(newPos).first);
+		moveSelec(event->pos());
 	}
 	QGraphicsView::mouseMoveEvent(event);
+}
+
+void TlView::putSelec(bool clipExists)
+{
+	double newPos = slcClipItem->x() / wps;
+
+	emit clipItemMoved(slcClipItem->data, newPos, snapToTracks(slcClipItem->pos()).second, clipExists);
+
+	cleanupSelec();
+}
+
+void TlView::cleanupSelec()
+{
+	scene->removeItem(slcClipItem);
+	delete slcClipItem;
+	slcClipItem = nullptr;
 }
 
 void TlView::mousePressEvent(QMouseEvent* event)
@@ -89,10 +104,11 @@ void TlView::mousePressEvent(QMouseEvent* event)
 	if (clipItem)
 	{
 		slcClipItem = clipItem->shallowCopy();
-		slcClipItem->setOpacity(0.5);
+		slcClipItem->setOpacity(0.8);
 		scene->addItem(slcClipItem);
 
 		dragOffset = clipItem->pos() - mapToScene(event->pos());
+		moveSelec(event->pos());
 		emit requestClipSelect(clipItem->data);
 	}
 	QGraphicsView::mousePressEvent(event);
@@ -101,13 +117,7 @@ void TlView::mousePressEvent(QMouseEvent* event)
 void TlView::mouseReleaseEvent(QMouseEvent* event)
 {
 	if (slcClipItem) {
-		double newPos = slcClipItem->x() / wps;
-
-		emit clipItemMoved(slcClipItem->data, newPos, snapToTracks(slcClipItem->pos()).second);
-
-		scene->removeItem(slcClipItem);
-		delete slcClipItem;
-		slcClipItem = nullptr;
+		putSelec(true);
 	}
 	QGraphicsView::mouseReleaseEvent(event);
 }
@@ -115,7 +125,6 @@ void TlView::mouseReleaseEvent(QMouseEvent* event)
 void TlView::dragEnterEvent(QDragEnterEvent* event)
 {
 	QGraphicsView::dragEnterEvent(event);
-	qDebug() << "hullo";
 	if (event->mimeData()->hasFormat("application/x-libitemdata"))
 	{
 		event->acceptProposedAction();
@@ -127,10 +136,11 @@ void TlView::dragEnterEvent(QDragEnterEvent* event)
 
 		double clipPos = event->position().x() / wps;
 		ClipData* data = new ClipData(nullptr, filePath, 0, 2, clipPos);
-		slcClipItem = new ClipItem(data, wps, defaultTrackHeight, 0.5);
+		slcClipItem = new ClipItem(data, wps, defaultTrackHeight, 0.8);
 		scene->addItem(slcClipItem);
 		slcClipItem->setPos(event->position());
 		dragOffset = QPointF(0, 0);
+		moveSelec(event->position().toPoint());
 	}
 	else
 	{
@@ -144,6 +154,7 @@ void TlView::dragMoveEvent(QDragMoveEvent* event)
 	if (event->mimeData()->hasFormat("application/x-libitemdata"))
 	{
 		event->acceptProposedAction();
+		moveSelec(event->position().toPoint());
 	}
 	else
 	{
@@ -155,6 +166,14 @@ void TlView::dropEvent(QDropEvent* event)
 {
 	QGraphicsView::dropEvent(event);
 	event->acceptProposedAction();
+	putSelec(false);
+}
+
+void TlView::dragLeaveEvent(QDragLeaveEvent* event)
+{
+	QGraphicsView::dragLeaveEvent(event);
+
+	cleanupSelec();
 }
 
 void TlView::updateTrackWidths()

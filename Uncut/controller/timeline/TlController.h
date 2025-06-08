@@ -12,8 +12,7 @@ public:
 	TlController(Uncut& window, TlModel* model);
 
 public slots:
-	void onMovingClipRequested(ClipItem* clipItem, QPointF newPos);
-	void onClipItemMoved(ClipData* data, double newPos, int newTrack);
+	void onClipItemMoved(ClipData* data, double newPos, int newTrack, bool clipExists);
 	void onClipSelectRequested(ClipData* data);
 
 private:

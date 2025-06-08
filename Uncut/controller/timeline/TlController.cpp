@@ -20,30 +20,34 @@ TlController::TlController(Uncut& window, TlModel* model) : model(model), tlView
 
 
 
-void TlController::onMovingClipRequested(ClipItem* clipItem, QPointF newPos)
-{
-}
-
-void TlController::onClipItemMoved(ClipData* data, double newPos, int newTrack)
+void TlController::onClipItemMoved(ClipData* data, double newPos, int newTrack, bool clipExists)
 {
 	if (newTrack >= model->tracks.size())
 	{
 		model->addTrack();
 	}
 
-
-	model->moveClip(data, newPos, newTrack);
-	for (int i = model->tracks.size() - 1; i >= 0; --i)
+	if (clipExists)
 	{
-		if (model->tracks[i]->clips.size() == 0)
+		model->moveClip(data, newPos, newTrack);
+		for (int i = model->tracks.size() - 1; i >= 0; --i)
 		{
-			model->removeLastTrack();
-		}
-		else
-		{
-			break;
+			if (model->tracks[i]->clips.size() == 0)
+			{
+				model->removeLastTrack();
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
+	else
+	{
+		data->pos = newPos;
+		model->addClip(data, newTrack);
+	}
+
 }
 
 
