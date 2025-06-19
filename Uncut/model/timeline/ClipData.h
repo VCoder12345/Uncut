@@ -9,10 +9,10 @@ public:
 	double pos;
 	bool selected = false;
 	QString filePath;
-	std::shared_ptr<VideoFrame> frame;
+	QImage previewImage;
 	int trackIndex = -1;
 
-	ClipData(std::shared_ptr<VideoFrame> frame, QString filePath, double startPts, double endPts, double pos) : frame(frame), filePath(filePath),
+	ClipData(QString previewImage, QString filePath, double startPts, double endPts, double pos) : previewImage(previewImage), filePath(filePath),
 		startPts(startPts), endPts(endPts), pos(pos) {}
 
 	double duration() const {

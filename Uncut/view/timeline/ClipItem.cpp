@@ -17,6 +17,7 @@ QRectF ClipItem::boundingRect() const {
 void ClipItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) {
 	painter->setOpacity(opacity);
 	painter->fillRect(boundingRect(), QBrush(Qt::blue));
+	painter->drawImage(boundingRect(), data->previewImage);
 
 	if (data->selected) {
 		painter->setPen(QPen(Qt::red));
