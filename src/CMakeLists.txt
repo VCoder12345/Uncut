@@ -26,9 +26,10 @@ qt_add_executable(app
   services/decoder/AudioDecoder.cpp
   services/decoder/FFMPEGDecoder.cpp
   services/decoder/VideoDecoder.cpp
-  services/decoder/VideoDecodeWorker.h
-  services/decoder/AudioDecodeWorker.h
-  services/decoder/VideoDisplayWorker.h
+  services/decoder/VideoDecodeWorker.cpp
+  services/decoder/AudioDecodeWorker.cpp
+  services/decoder/VideoDisplayWorker.cpp
+  services/decoder/VideoStreamBuffer.cpp
   services/exchange/ExchangeService.cpp
 
   #utils

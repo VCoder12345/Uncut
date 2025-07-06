@@ -10,79 +10,23 @@
 
 class VideoStreamBuffer {
 public:
-    VideoStreamBuffer(size_t maxSize) : maxSize(maxSize) {
-        this->buffer = new std::shared_ptr<VideoFrame> [maxSize];
-    }
+  VideoStreamBuffer(size_t maxSize);
 
-    ~VideoStreamBuffer() {
-        delete[] buffer;
-    }
+  ~VideoStreamBuffer();
 
-    void appendData(std::shared_ptr<VideoFrame> vframe) {
-        QMutexLocker locker(&mutex);
-        while (bufferSize >= maxSize) {
-            waitCond.wait(&mutex);
-        }
+  void appendData(std::shared_ptr<VideoFrame> vframe);
 
+  size_t size() const;
 
-        buffer[tailPointer] = vframe;
+  void setEOF();
 
-        
-        tailPointer = (tailPointer + 1) % maxSize;
-        ++bufferSize;
+  std::shared_ptr<VideoFrame> dequeue();
 
-        waitCond.wakeAll();
-    }
+  bool isFinished() const;
 
-    size_t size() const {
-        QMutexLocker locker(&mutex);
-        return bufferSize;
-    }
+  void clear();
 
-    void setEOF() {
-        QMutexLocker locker(&mutex);
-        reached_eof = true;
-    }
-
-    std::shared_ptr<VideoFrame> dequeue() {
-        QMutexLocker locker(&mutex);
-        while (bufferSize == 0 && !reached_eof) {
-            waitCond.wait(&mutex);
-        }
-
-        if (bufferSize == 0 && reached_eof) return nullptr;
-
-        std::shared_ptr<VideoFrame> front = buffer[headPointer];
-        buffer[headPointer] = nullptr;
-        headPointer = (headPointer + 1) % maxSize;
-        --bufferSize;
-
-        waitCond.wakeAll();
-
-        return front;
-    }
-
-    bool isFinished() const {
-        QMutexLocker locker(&mutex);
-        
-        return bufferSize == 0 && reached_eof;
-    }
-
-    void clear() {
-        QMutexLocker locker(&mutex);
-        for (int i = headPointer; i < tailPointer; ++i) {
-            buffer[i] = nullptr;
-        }
-        bufferSize = 0;
-        headPointer = 0;
-        tailPointer = 0;
-        reached_eof = false;
-        waitCond.wakeAll();
-    }
-
-    void interrupt() {
-        clear();
-    }
+  void interrupt();
 
 private:
     std::shared_ptr<VideoFrame>* buffer;

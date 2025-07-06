@@ -21,30 +21,16 @@ extern "C" {
 class VideoDecodeWorker : public QObject {
     Q_OBJECT
 public:
-    VideoDecodeWorker(QString path, VideoStreamBuffer* videoBuffer)
-        : filePath(path), videoBuffer(videoBuffer) {
-    }
+  VideoDecodeWorker(QString path, VideoStreamBuffer *videoBuffer);
 
-    ~VideoDecodeWorker() {
-        cleanup();
-    }
+  ~VideoDecodeWorker();
 
-    void cleanup() {
-        //qDebug() << "video decoder clean";
-        decoder.cleanup();
-        decoder.closeStream(stream);
-    }
+  void cleanup();
 
-    void interrupt() {
-        interrupted.store(true);
-    }
+  void interrupt();
 
 public slots:
-    void startDecoding() {
-        decodeVideoFile();
-    }
-
-   
+  void startDecoding();
 
 signals:
     void finished();
@@ -56,23 +42,5 @@ private:
     Stream stream;
     std::atomic<bool> interrupted{ false };
 
-    void decodeVideoFile() {
-        qDebug() << "[video] start decoding";
-
-        
-        if (auto streamResult = decoder.openStream(filePath.toStdString().c_str())) {
-            stream = streamResult.value();
-
-            std::shared_ptr<VideoFrame> frame;
-            while (!interrupted.load() && (frame = decoder.nextVideoFrame(stream))) {
-                videoBuffer->appendData(frame);
-            }
-
-            videoBuffer->setEOF();
-
-            cleanup();
-
-            qDebug() << "[video] finished decoding";
-        }
-    }
+    void decodeVideoFile();
 };

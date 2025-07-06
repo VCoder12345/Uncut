@@ -23,36 +23,21 @@ extern "C" {
 class AudioDecodeWorker : public QObject {
     Q_OBJECT
 public:
-    AudioDecodeWorker(QString filePath, SDL_AudioStream* sdlStream, size_t MAX_BUFFER)
-        : filePath(filePath), sdlStream(sdlStream), MAX_BUFFER(MAX_BUFFER) {
-    }
+  AudioDecodeWorker(QString filePath, SDL_AudioStream *sdlStream,
+                    size_t MAX_BUFFER);
 
-    ~AudioDecodeWorker() {
-        cleanup();
-    }
+  ~AudioDecodeWorker();
 
-    void interrupt() {
-        interrupted.store(true);
-    }
+  void interrupt();
 
 public slots:
-    void startDecoding() {
-        decodeAudioFile();
-    }
+  void startDecoding();
 
-    double getAudioClock() {
-        return audioClock.load(std::memory_order_relaxed);
-    }
+  double getAudioClock();
 
-    void pause() {
-        SDL_PauseAudioStreamDevice(sdlStream);
-        qDebug() << "[audio] audio playback paused";
-    }
+  void pause();
 
-    void resume() {
-        SDL_ResumeAudioStreamDevice(sdlStream);
-        qDebug() << "[audio] resume playback";
-    }
+  void resume();
 
 signals:
     void finished();
@@ -65,40 +50,8 @@ private:
     const size_t MAX_BUFFER;
     Stream stream;
     std::atomic<bool> interrupted{ false };
-    
-    void cleanup() {
-        decoder.cleanup();
-        decoder.closeStream(stream);
 
-        //qDebug() << "audio decoder clean";
-    }
+    void cleanup();
 
-    void decodeAudioFile() {
-        // Do FFmpeg decoding like before
-       // Whenever you get PCM data:
-        qDebug() << "[audio] start decoding";
-
-        if (auto streamResult = decoder.openStream(filePath.toStdString().c_str())) {
-            stream = streamResult.value();
-            
-            std::unique_ptr<AudioFrame> frame;
-            while (!interrupted.load() && (frame = decoder.nextAudioFrame(stream))) {
-
-                while (!interrupted.load() && SDL_GetAudioStreamQueued(sdlStream) > MAX_BUFFER) {
-                    QThread::msleep(10);
-                    QCoreApplication::processEvents();
-                }
-
-                SDL_PutAudioStreamData(sdlStream, (char*)frame->data, frame->size);
-                audioClock.store(frame->pts);
-                QCoreApplication::processEvents();
-            }
-
-            
-
-            cleanup();
-
-            qDebug() << "[audio] finished decoding";
-        }
-    }
+    void decodeAudioFile();
 };

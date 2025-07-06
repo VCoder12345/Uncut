@@ -25,32 +25,13 @@ class LibModel : public QObject
 	Q_OBJECT
 
 public:
-	void addItem(LibItemData* data) {
-		itemDataList.push_back(data);
+  void addItem(LibItemData *data);
 
-		emit itemAdded(data);
-	}
+  int getSelectedItem();
 
-	int getSelectedItem() {
-		return selectedItem;
-	}
+  void setSelectedItem(int selected);
 
-	void setSelectedItem(int selected) {
-		int oldSelected = this->selectedItem;
-		if(oldSelected >= 0)
-			itemDataList[oldSelected]->selected = false;
-
-		itemDataList[selected]->selected = true;
-		this->selectedItem = selected;
-
-		emit itemSelected(oldSelected, selected, itemDataList[selected]);
-	}
-
-	~LibModel() {
-		for (LibItemData* data : itemDataList) {
-			delete data;
-		}
-	}
+  ~LibModel();
 
 signals:
 	void itemAdded(const LibItemData* data);
