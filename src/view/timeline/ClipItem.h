@@ -11,6 +11,7 @@ class ClipItem  : public QGraphicsItem
 
 public:
 	ClipData* data;
+	QImage previewImage;
 
 	ClipItem(ClipData* data, double wps, int height, double opacity = 1.0);
 	~ClipItem();
@@ -27,10 +28,13 @@ public:
 
 protected:
 	QRectF boundingRect() const override;
+	double getHeight() const;
+	double getWidth() const;
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 private:
 	double wps;
 	int height;
 	double opacity;
+	const double namePadding = 3;
 };

@@ -126,17 +126,14 @@ void TlView::mouseReleaseEvent(QMouseEvent* event)
 void TlView::dragEnterEvent(QDragEnterEvent* event)
 {
 	QGraphicsView::dragEnterEvent(event);
-	if (event->mimeData()->hasFormat("application/x-libitemdata"))
+	if (event->mimeData()->hasFormat(exchangeService.getLibItemMimeFormat()))
 	{
 		event->acceptProposedAction();
-		QByteArray itemData = event->mimeData()->data("application/x-libitemdata");
-		QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
-		QString filePath;
-		dataStream >> filePath;
-
+		ClipData* data = exchangeService.libItemMimeToClipData(event->mimeData());
+			
 		double clipPos = event->position().x() / wps;
-		ClipData* data = new ClipData(nullptr, filePath, 0, 2, clipPos);
+		data->pos = clipPos;
 		slcClipItem = new ClipItem(data, wps, defaultTrackHeight, 0.8);
 		scene->addItem(slcClipItem);
 		slcClipItem->setPos(event->position());
@@ -217,6 +214,7 @@ void TlView::addTrack(TrackData* data)
 		y = 0;
 	}
 	TrackItem* trackItem = new TrackItem(data, y, defaultTrackHeight);
+
 	tracks.push_back(trackItem);
 	scene->addItem(trackItem);
 	trackItem->setPos(0, y);

@@ -10,11 +10,12 @@ class TlModel  : public QObject
 	Q_OBJECT
 
 public:
-	ClipData* slcClip;
+	ClipData* slcClip = nullptr;
 	std::vector<TrackData*> tracks;
 
 	TlModel();
 	~TlModel();
+
 
 	void addClip(ClipData* clipData, int trackIndex);
 	void addTrack();

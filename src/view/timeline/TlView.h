@@ -7,6 +7,8 @@
 #include <model/timeline/TlModel.h>
 #include <QMimeData>
 
+#include "services/exchange/ExchangeService.h"
+
 class TlView  : public QGraphicsView
 {
 	Q_OBJECT
@@ -15,6 +17,7 @@ public:
 	double wps = 100;
 	QGraphicsScene* scene;
 	qreal defaultTrackHeight = 100;
+	ExchangeService exchangeService;
 
 
 	TlView(QWidget *parent);

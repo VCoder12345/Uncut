@@ -8,10 +8,10 @@ TlController::TlController(Uncut& window, TlModel* model) : model(model), tlView
 	model->addTrack();
 	model->addTrack();
 
-	model->addClip(new ClipData(nullptr, "", 0, 5.0, 0.0), 1);
-	model->addClip(new ClipData(nullptr, "", 0, 2.0, 0.0), 2);
-	model->addClip(new ClipData(nullptr, "", 0, 1.0, 0.0), 0);
-	model->addClip(new ClipData(nullptr, "", 0, 4.0, 0.0), 2);
+	model->addClip(new ClipData(nullptr, "", "hallo", 0, 5.0, 0.0), 1);
+	model->addClip(new ClipData(nullptr, "", "danke", 0, 2.0, 0.0), 2);
+	model->addClip(new ClipData(nullptr, "", "tschuss", 0, 1.0, 0.0), 0);
+	model->addClip(new ClipData(nullptr, "", "aha", 0, 4.0, 0.0), 2);
 
 	connect(tlView, &TlView::clipItemMoved, this, &TlController::onClipItemMoved);
 	connect(tlView, &TlView::requestClipSelect, this, &TlController::onClipSelectRequested);
@@ -54,6 +54,7 @@ void TlController::onClipItemMoved(ClipData* data, double newPos, int newTrack, 
 	}
 
 }
+
 
 
 

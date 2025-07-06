@@ -45,8 +45,8 @@ void VideoDecoder::cleanup()
 	}
 }
 
-std::optional<VideoInfo> VideoDecoder::getVideoInfo(const char* filePath) {
-	if (auto streamResult = openStream(filePath)) {
+std::optional<VideoInfo> VideoDecoder::getVideoInfo(const QString& filePath) {
+	if (auto streamResult = openStream(filePath.toStdString().c_str())) {
 		Stream& stream = streamResult.value();
 		VideoInfo info;
 		info.duration = stream.formatCtx->duration;

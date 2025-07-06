@@ -5,6 +5,8 @@
 #include <services/decoder/VideoDecoder.h>
 #include <view/Uncut.h>
 
+#include "services/exchange/ExchangeService.h"
+
 class LibController : public QObject
 {
 	Q_OBJECT
@@ -24,7 +26,6 @@ public slots:
 private:
 	LibModel* model;
 	VideoDecoder videoDecoder;
-
-	
+	ExchangeService exchangeService;
 };
 

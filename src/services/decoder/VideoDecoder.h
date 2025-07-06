@@ -7,6 +7,7 @@
 class  VideoInfo {
 public:
 	std::shared_ptr<VideoFrame> firstFrame;
+
 	int64_t duration;
 
 };
@@ -17,7 +18,7 @@ public:
 	std::shared_ptr<VideoFrame> nextVideoFrame(const Stream& stream);
 	std::optional<Stream> openStream(const char* filePath);
 	void cleanup() override;
-	std::optional<VideoInfo> getVideoInfo(const char* filePath);
+	std::optional<VideoInfo> getVideoInfo(const QString& filePath);
 
 private:
 	uint8_t* buffer[4];

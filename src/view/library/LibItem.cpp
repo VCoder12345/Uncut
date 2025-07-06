@@ -1,5 +1,7 @@
 #include "LibItem.h"
 
+#include "utils/UiHelper.h"
+
 
 LibItem::LibItem(const LibItemData* data, int width, int height, int index) : data(data), width(width), height(height), index(index)
 {
@@ -24,25 +26,12 @@ void LibItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, Q
 	else {
 		durationTxt = QString::asprintf("%02d:%02d:%02d", data->duration.hours, data->duration.minutes, data->duration.seconds);
 	}
-	QString nameTxt = data->name;
 	QFontMetrics metrics(font);
 	int durTxtWidth = metrics.horizontalAdvance(durationTxt);
-	int nameTxtWidth = metrics.horizontalAdvance(nameTxt);
 	int txtGap = 5;
 	int nameLimitW = width - durTxtWidth - txtGap;
 
-	if (nameTxtWidth > nameLimitW) {
-		int sz = nameTxt.size();
-		for (int i = sz - 1; i >= 0; --i) {
-			QString nameSlice = nameTxt.left(i) + "...";
-			nameTxtWidth = metrics.horizontalAdvance(nameSlice);
-
-			if (nameTxtWidth <= nameLimitW) {
-				nameTxt = nameSlice;
-				break;
-			}
-		}
-	}
+	QString nameTxt = UiHelper::shortenTextTo(data->name, nameLimitW, font);
 	
 
 	painter->drawText(padding, height + padding, width, height + textMargin, Qt::AlignRight, durationTxt);
