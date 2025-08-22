@@ -14,7 +14,7 @@ class TlView  : public QGraphicsView
 	Q_OBJECT
 
 public:
-	double wps = 100;
+	double wps = 20;
 	QGraphicsScene* scene;
 	qreal defaultTrackHeight = 100;
 	ExchangeService exchangeService;

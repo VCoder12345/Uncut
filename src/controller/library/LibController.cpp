@@ -57,7 +57,8 @@ void LibController::importItemFromFile(const QString& filePath)
 		VideoInfo videoInfo = result.value();
 		QString fileName = filePath.sliced(filePath.lastIndexOf("/") + 1);
 		TimeObj durationObj = TimeObj::timeFromMicroseconds(videoInfo.duration);
-		LibItemData* data = new LibItemData(videoInfo.firstFrame, filePath, fileName, durationObj);
+		double durationInSecs = static_cast<double>(videoInfo.duration) / 1000000.0;
+		LibItemData* data = new LibItemData(videoInfo.firstFrame, filePath, fileName, durationInSecs, durationObj);
 		model->addItem(data);
 	}
 }

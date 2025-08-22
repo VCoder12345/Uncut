@@ -5,9 +5,11 @@ QMimeData* ExchangeService::libItemToMIME(const LibItemData* data) const
 {
 
 	QByteArray dropData;
+
 	QDataStream dropStream(&dropData, QIODevice::WriteOnly);
 	dropStream << data->filePath;
 	dropStream << data->name;
+	dropStream << data->durationInSecs;
 
 	QMimeData* mimeData = new QMimeData;
 	mimeData->setData(libItemMimeType, dropData);
@@ -26,12 +28,13 @@ ClipData* ExchangeService::libItemMimeToClipData(const QMimeData* mimeData)
 	
 
 	QString filePath, name;
-	dataStream >> filePath >> name;
+	double durationInSecs;
+	dataStream >> filePath >> name >> durationInSecs;
 
 	if (auto videoInfo = videoDecoder.getVideoInfo(filePath))
 	{
 		std::shared_ptr<VideoFrame> previewFrame = videoInfo.value().firstFrame;
-		return new ClipData(previewFrame, filePath, name, 0, 2, 0);
+		return new ClipData(previewFrame, filePath, name, 0, durationInSecs, 0);
 	}
 
 }

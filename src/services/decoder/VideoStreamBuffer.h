@@ -1,12 +1,10 @@
 #pragma once
 
 #include "VideoFrame.h"
-#include <queue>
 #include <qmutex.h>
 #include <qwaitcondition.h>
 #include <qdebug.h>
 #include <memory>
-#include <vector>
 
 class VideoStreamBuffer {
 public:

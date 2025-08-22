@@ -7,10 +7,14 @@
 #include <utils/TimeHelper.h>
 #include "services/decoder/VideoFrame.h"
 
-class LibItemData {
+class LibItemData
+{
 public:
-	LibItemData(std::shared_ptr<VideoFrame> previewFrame, QString filePath, QString name, TimeObj duration) : previewFrame(previewFrame), filePath(filePath), name(name), duration(duration), selected(false) {
-
+	LibItemData(std::shared_ptr<VideoFrame> previewFrame, QString filePath, QString name, double durationInSecs,
+	            TimeObj duration)
+		: previewFrame(previewFrame), durationInSecs(durationInSecs), filePath(filePath), name(name),
+		  duration(duration), selected(false)
+	{
 	}
 
 	std::shared_ptr<VideoFrame> previewFrame;
@@ -18,6 +22,7 @@ public:
 	TimeObj duration;
 	bool selected;
 	QString filePath;
+	double durationInSecs;
 };
 
 class LibModel : public QObject
@@ -25,13 +30,13 @@ class LibModel : public QObject
 	Q_OBJECT
 
 public:
-  void addItem(LibItemData *data);
+	void addItem(LibItemData* data);
 
-  int getSelectedItem();
+	int getSelectedItem();
 
-  void setSelectedItem(int selected);
+	void setSelectedItem(int selected);
 
-  ~LibModel();
+	~LibModel();
 
 signals:
 	void itemAdded(const LibItemData* data);
@@ -41,4 +46,3 @@ private:
 	std::vector<LibItemData*> itemDataList;
 	int selectedItem = -1;
 };
-

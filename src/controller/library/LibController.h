@@ -1,7 +1,6 @@
 #pragma once
 #include <QObject>
 #include "model/library/LibModel.h"
-#include <qstringlist.h>
 #include <services/decoder/VideoDecoder.h>
 #include <view/Uncut.h>
 
