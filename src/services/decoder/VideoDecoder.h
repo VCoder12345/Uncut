@@ -12,17 +12,22 @@ public:
 
 };
 
+struct VideoStream : public Stream {
+	uint8_t* buffer[4];
+	struct SwsContext* swsCtx = nullptr;
+	int lineSize[4];
+
+	VideoStream(const Stream& stream) : Stream(stream) {}
+	VideoStream() {}
+};
+
 class VideoDecoder : public FFMPEGDecoder
 {
 public:
-	std::shared_ptr<VideoFrame> nextVideoFrame(const Stream& stream);
-	std::optional<Stream> openStream(const char* filePath);
-	void cleanup() override;
-	std::optional<VideoInfo> getVideoInfo(const QString& filePath);
+	static std::shared_ptr<VideoFrame> nextVideoFrame(VideoStream& stream);
+	static std::optional<VideoStream> openStream(const char* filePath);
+	static std::optional<VideoInfo> getVideoInfo(const QString& filePath);
+	static void closeStream(VideoStream& stream);
 
-private:
-	uint8_t* buffer[4];
-	struct SwsContext* sws_ctx;
-	int lineSize[4];
 };
 

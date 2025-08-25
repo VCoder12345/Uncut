@@ -21,6 +21,7 @@ qt_add_executable(app
   #model
   model/library/LibModel.cpp
   model/timeline/TlModel.cpp
+  model/timeline/TrackData.cpp
 
   #services
   services/decoder/AudioDecoder.cpp
@@ -31,6 +32,9 @@ qt_add_executable(app
   services/decoder/VideoDisplayWorker.cpp
   services/decoder/VideoStreamBuffer.cpp
   services/exchange/ExchangeService.cpp
+  services/playback/PbScheduler.cpp
+  services/playback/PbJobQueue.cpp
+  services/playback/PbVideoDecoder.cpp
 
   #utils
   utils/TimeHelper.h
@@ -64,3 +68,4 @@ add_custom_command(TARGET app POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${SDL3_DLL_PATH}"
     $<TARGET_FILE_DIR:app>)
+

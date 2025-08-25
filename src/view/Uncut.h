@@ -7,22 +7,22 @@
 
 class Uncut : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    Uncut(QWidget *parent = nullptr);
-    ~Uncut();
+	Uncut(QWidget* parent = nullptr);
+	~Uncut() override;
 
-    QPushButton* getPlayBtn();
+	QPushButton* getPlayBtn() const;
 
-    LibraryView* getLibView();
-    QAction* getImportAction();
-    PreviewView* getPreviewView();
-    TlView* getTlView();
+	LibraryView* getLibView() const;
+	QAction* getImportAction() const;
+	PreviewView* getPreviewView() const;
+	TlView* getTlView() const;
 
 public slots:
-    void onLoad();
+	void onLoad();
 
 private:
-    Ui::UncutClass ui;
+	Ui::UncutClass ui;
 };

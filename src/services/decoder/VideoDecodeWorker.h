@@ -38,8 +38,7 @@ signals:
 private:
     QString filePath;
     VideoStreamBuffer* videoBuffer;
-    VideoDecoder decoder;
-    Stream stream;
+    VideoStream stream;
     std::atomic<bool> interrupted{ false };
 
     void decodeVideoFile();

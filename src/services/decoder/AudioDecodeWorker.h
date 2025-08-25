@@ -46,9 +46,8 @@ private:
     QString filePath;
     SDL_AudioStream* sdlStream;
     std::atomic<double> audioClock{ 0.0 };
-    AudioDecoder decoder;
     const size_t MAX_BUFFER;
-    Stream stream;
+    AudioStream stream;
     std::atomic<bool> interrupted{ false };
 
     void cleanup();

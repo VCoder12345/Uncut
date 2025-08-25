@@ -14,26 +14,27 @@ Uncut::~Uncut()
 {
 }
 
-QPushButton* Uncut::getPlayBtn() {
+QPushButton* Uncut::getPlayBtn() const
+{
 return ui.previewFrame->findChild<QPushButton*>("playBtn");
 }
 
-LibraryView* Uncut::getLibView()
+LibraryView* Uncut::getLibView() const
 {
     return ui.libFrame->findChild<LibraryView*>("libView");
 }
 
-QAction* Uncut::getImportAction()
+QAction* Uncut::getImportAction() const
 {
     return ui.actionimport;
 }
 
-PreviewView* Uncut::getPreviewView()
+PreviewView* Uncut::getPreviewView() const
 {
     return ui.previewFrame->findChild<PreviewView*>("previewView");
 }
 
-TlView* Uncut::getTlView()
+TlView* Uncut::getTlView() const
 {
     return ui.tlView;
 }

@@ -1,3 +1,4 @@
 .vs/
-out/
+build/
 .clangd
+CMakeUserPresets.json

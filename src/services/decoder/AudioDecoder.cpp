@@ -1,60 +1,71 @@
 #include "AudioDecoder.h"
 #include <qdebug.h>
 
-std::unique_ptr<AudioFrame> AudioDecoder::nextAudioFrame(const Stream& stream)
+std::unique_ptr<AudioFrame> AudioDecoder::nextAudioFrame(AudioStream& stream)
 {
-    if (!isInitialised()) {
-        outBuffer = (uint8_t*)av_malloc(192000);
+	if (auto result = nextFrame(stream))
+	{
+		DecodeFrame decoderFrame = result.value();
 
-        av_channel_layout_default(&outLayout, 2); // stereo output
-
-        swrCtx = swr_alloc();
-        if (!swrCtx) {
-            qWarning() << "[audio] Failed to allocate SwrContext";
-            return nullptr;
-        }
-
-        int err = swr_alloc_set_opts2(&swrCtx,
-            &outLayout, AV_SAMPLE_FMT_S16, 44100,        // output
-            &stream.codecCtx->ch_layout, stream.codecCtx->sample_fmt, stream.codecCtx->sample_rate,  // input
-            0, nullptr);
-
-        if (err < 0) {
-            qWarning() << "[audio] swr_alloc_set_opts2 failed";
-            return nullptr;
-        }
-
-        swr_init(swrCtx);
-    }
-
-    if (auto result = nextFrame(stream)) {
-        DecodeFrame decoderFrame = result.value();
-
-        int outSamples = swr_convert(swrCtx,
-            &outBuffer, 192000 / 2,
-            (const uint8_t**)decoderFrame.frame->data, decoderFrame.frame->nb_samples
-        );
-        int dataSize = outSamples * 2 * 2; // samples * channels * 16-bit
+		int outSamples = swr_convert(stream.swrCtx,
+		                             &stream.outBuffer, 192000 / 2,
+		                             (const uint8_t**)decoderFrame.frame->data, decoderFrame.frame->nb_samples
+		);
+		int dataSize = outSamples * 2 * 2; // samples * channels * 16-bit
 
 
-        return std::make_unique<AudioFrame>(outBuffer, dataSize, decoderFrame.pts);
-    }
+		return std::make_unique<AudioFrame>(stream.outBuffer, dataSize, decoderFrame.pts);
+	}
 
-    return nullptr;
+	return nullptr;
 }
 
-std::optional<Stream> AudioDecoder::openStream(const char* filePath)
+std::optional<AudioStream> AudioDecoder::openStream(const char* filePath)
 {
-    return FFMPEGDecoder::openStream(filePath, AVMEDIA_TYPE_AUDIO);
+	if (auto result = FFMPEGDecoder::openStream(filePath, AVMEDIA_TYPE_AUDIO))
+	{
+		AudioStream stream(result.value());
+		stream.outBuffer = (uint8_t*)av_malloc(192000);
+
+		av_channel_layout_default(&stream.outLayout, 2); // stereo output
+
+		stream.swrCtx = swr_alloc();
+		if (!stream.swrCtx)
+		{
+			qWarning() << "[audio] Failed to allocate SwrContext";
+			return std::nullopt;
+		}
+
+		int err = swr_alloc_set_opts2(&stream.swrCtx,
+		                              &stream.outLayout, AV_SAMPLE_FMT_S16, 44100, // output
+		                              &stream.codecCtx->ch_layout, stream.codecCtx->sample_fmt,
+		                              stream.codecCtx->sample_rate, // input
+		                              0, nullptr);
+
+		if (err < 0)
+		{
+			qWarning() << "[audio] swr_alloc_set_opts2 failed";
+			return std::nullopt;
+		}
+
+		swr_init(stream.swrCtx);
+
+		return stream;
+	}
+
+	return std::nullopt;
 }
 
-void AudioDecoder::cleanup()
+void AudioDecoder::closeStream(AudioStream& stream)
 {
-    FFMPEGDecoder::cleanup();
+	FFMPEGDecoder::closeStream(stream);
 
-    if (isInitialised()) {
-		swr_free(&swrCtx);
-		av_free(outBuffer);
-		av_channel_layout_uninit(&outLayout);
-    }
-   }
+	if (stream.swrCtx)
+	{
+		swr_free(&stream.swrCtx);
+		av_free(stream.outBuffer);
+		av_channel_layout_uninit(&stream.outLayout);
+	}
+}
+
+

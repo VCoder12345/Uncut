@@ -25,8 +25,7 @@ void AudioDecodeWorker::resume() {
 }
 
 void AudioDecodeWorker::cleanup() {
-  decoder.cleanup();
-  decoder.closeStream(stream);
+  AudioDecoder::closeStream(stream);
 
   // qDebug() << "audio decoder clean";
 }
@@ -36,11 +35,11 @@ void AudioDecodeWorker::decodeAudioFile() {
   // Whenever you get PCM data:
   qDebug() << "[audio] start decoding";
 
-  if (auto streamResult = decoder.openStream(filePath.toStdString().c_str())) {
+  if (auto streamResult = AudioDecoder::openStream(filePath.toStdString().c_str())) {
     stream = streamResult.value();
 
     std::unique_ptr<AudioFrame> frame;
-    while (!interrupted.load() && (frame = decoder.nextAudioFrame(stream))) {
+    while (!interrupted.load() && (frame = AudioDecoder::nextAudioFrame(stream))) {
 
       while (!interrupted.load() &&
              SDL_GetAudioStreamQueued(sdlStream) > MAX_BUFFER) {
