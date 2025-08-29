@@ -6,6 +6,8 @@
 #include <QMimeData>
 #include <QDrag>
 
+#include "services/decoder/VideoStream.h"
+
 void LibController::onItemImport()
 {
 	//QString videoDir = QStandardPaths::writableLocation(QStandardPaths::MoviesLocation);
@@ -53,7 +55,7 @@ void LibController::onItemPressed(int selected, const LibItemData* data)
 
 void LibController::importItemFromFile(const QString& filePath)
 {
-	if (auto result = videoDecoder.getVideoInfo(filePath)) {
+	if (auto result = VideoStream::getVideoInfo(filePath)) {
 		VideoInfo videoInfo = result.value();
 		QString fileName = filePath.sliced(filePath.lastIndexOf("/") + 1);
 		TimeObj durationObj = TimeObj::timeFromMicroseconds(videoInfo.duration);

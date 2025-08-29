@@ -1,7 +1,6 @@
 #pragma once
 #include <QObject>
 #include "model/library/LibModel.h"
-#include <services/decoder/VideoDecoder.h>
 #include <view/Uncut.h>
 
 #include "services/exchange/ExchangeService.h"
@@ -24,7 +23,6 @@ public slots:
 
 private:
 	LibModel* model;
-	VideoDecoder videoDecoder;
 	ExchangeService exchangeService;
 };
 

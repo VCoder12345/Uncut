@@ -14,18 +14,8 @@ extern "C" {
 
 #include <functional>
 
-
-struct Stream
-{
-	AVFormatContext* formatCtx = nullptr;
-	const AVCodec* codec = nullptr;
-	AVCodecContext* codecCtx = nullptr;
-	int index;
-	AVPacket* pkt = nullptr;
-	AVFrame* frame = nullptr;
-	bool initDecoding = false;
-	bool firstDecode = true;
-};
+#define STREAM_TYPE_VIDEO AVMEDIA_TYPE_VIDEO
+#define STREAM_TYPE_AUDIO AVMEDIA_TYPE_AUDIO
 
 struct DecodeFrame
 {
@@ -33,12 +23,23 @@ struct DecodeFrame
 	const AVFrame* frame;
 };
 
-
-class FFMPEGDecoder
+class FFMPEGStream
 {
 public:
-	static std::optional<Stream> openStream(const char* filePath, int type);
-	static void closeStream(Stream& stream);
-	static std::optional<DecodeFrame> nextFrame(Stream& stream);
+	bool openStream(const char* filePath, const int type, double startPts = 0.0);
 
-};
+	AVFormatContext* formatCtx = nullptr;
+	const AVCodec* codec = nullptr;
+	AVCodecContext* codecCtx = nullptr;
+	int index = 0;
+	AVPacket* pkt = nullptr;
+	AVFrame* frame = nullptr;
+	bool initDecoding = false;
+	bool firstDecode = true;
+
+
+	virtual ~FFMPEGStream();
+
+	std::optional<DecodeFrame> nextFrame();
+
+	};

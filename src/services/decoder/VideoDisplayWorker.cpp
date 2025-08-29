@@ -14,7 +14,7 @@ void VideoDisplayWorker::startDisplaying() {
     return;
 
   while (!interrupted.load() && !vbuffer->isFinished()) {
-    double audioPts = audioClock();
+    const double audioPts = audioClock();
 
     // Drop frames that are too far behind
     while (!interrupted.load() && frame &&
@@ -47,6 +47,6 @@ void VideoDisplayWorker::startDisplaying() {
 
 double VideoDisplayWorker::audioClock() {
   return audioDec->getAudioClock() -
-         (double)(SDL_GetAudioStreamQueued(stream)) / (44100 * 2 * 2);
+         static_cast<double>(SDL_GetAudioStreamQueued(stream)) / (44100 * 2 * 2);
 }
 

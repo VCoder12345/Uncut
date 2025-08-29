@@ -3,6 +3,8 @@
 #include <QObject>
 #include <qdebug.h>
 
+#include "VideoStream.h"
+
 extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
@@ -15,13 +17,12 @@ extern "C" {
 #include <qthread.h>
 #include "VideoFrame.h"
 #include "VideoStreamBuffer.h"
-#include "VideoDecoder.h"
 
 
 class VideoDecodeWorker : public QObject {
     Q_OBJECT
 public:
-  VideoDecodeWorker(QString path, VideoStreamBuffer *videoBuffer);
+  VideoDecodeWorker(const QString& path, VideoStreamBuffer *videoBuffer);
 
   ~VideoDecodeWorker();
 
@@ -38,7 +39,7 @@ signals:
 private:
     QString filePath;
     VideoStreamBuffer* videoBuffer;
-    VideoStream stream;
+    std::unique_ptr<VideoStream> stream = nullptr;
     std::atomic<bool> interrupted{ false };
 
     void decodeVideoFile();

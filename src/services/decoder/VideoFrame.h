@@ -12,8 +12,9 @@ public:
     int width, height;
     int dataSize;
 
-    VideoFrame(uint8_t* data, int width, int height, int dataSize, double pts)
-        : data(data), width(width), height(height), pts(pts) {
+    VideoFrame(uint8_t* data, int width, int height, int dataSize, const double pts)
+        : data(data), pts(pts), width(width), height(height), dataSize(dataSize)
+    {
     }
 
     ~VideoFrame() {
@@ -25,7 +26,8 @@ public:
         return QImage(data, width, height, QImage::Format_RGB888);
     }
 
-    uint8_t* copyData() {
+    uint8_t* copyData() const
+    {
         uint8_t* copyData = new uint8_t[dataSize];
         std::memcpy(copyData, data, dataSize);
         return copyData;
@@ -35,7 +37,8 @@ public:
         return std::make_unique<VideoFrame>(copyData(), width, height, dataSize, pts);
     }
     
-    QImage* toCopyImage() {
+    QImage* toCopyImage() const
+    {
         uint8_t* copiedData = copyData();
 
         QImageCleanupFunction cleanup = [](void* info) {

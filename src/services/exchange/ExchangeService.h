@@ -4,7 +4,6 @@
 #include <QMimeData>
 
 #include "model/timeline/ClipData.h"
-#include "services/decoder/VideoDecoder.h"
 
 class ExchangeService
 {
@@ -17,7 +16,6 @@ public:
 
 private:
 	QString libItemMimeType = "application/x-libitemdata";
-	VideoDecoder videoDecoder;
 };
 
 

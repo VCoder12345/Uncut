@@ -6,14 +6,14 @@ size_t PbJobQueue::size()
 	return jobQueue.size();
 }
 
-void PbJobQueue::push(ClipData* clip, double pts)
+void PbJobQueue::push(ClipData* clip, const double pts)
 {
 	QMutexLocker locker(&mutex);
-	jobQueue.push({clip, pts});
+	jobQueue.push({clip, pts, nullptr});
 	emptyCond.wakeOne();
 }
 
-void PbJobQueue::pushIfCapacity(ClipData* clip, double pts, size_t capacity)
+void PbJobQueue::pushIfCapacity(ClipData* clip, const double pts, const size_t capacity)
 {
 	while (jobQueue.size() >= capacity)
 	{
@@ -31,7 +31,7 @@ PbJob PbJobQueue::pop()
 	{
 		emptyCond.wait(&mutex);
 	}
-	PbJob job = jobQueue.top();
+	PbJob job = std::move(const_cast<PbJob&>(jobQueue.top()));
 	jobQueue.pop();
 
 	capacityCond.wakeOne();

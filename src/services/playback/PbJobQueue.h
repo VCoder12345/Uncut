@@ -4,11 +4,13 @@
 #include <QWaitCondition>
 
 #include "model/timeline/ClipData.h"
+#include "services/decoder/VideoStream.h"
 
 struct PbJob
 {
 	ClipData* clip;
 	double pts;
+	VideoStream* stream = nullptr;
 };
 
 struct JobComparator

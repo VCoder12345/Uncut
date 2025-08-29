@@ -14,7 +14,7 @@ extern "C" {
 
 #include <qthread.h>
 #include <atomic>
-#include "AudioDecoder.h"
+#include "AudioStream.h"
 #include <QString>
 #include <qmutex.h>
 #include <qwaitcondition.h>
@@ -47,7 +47,7 @@ private:
     SDL_AudioStream* sdlStream;
     std::atomic<double> audioClock{ 0.0 };
     const size_t MAX_BUFFER;
-    AudioStream stream;
+    std::unique_ptr<AudioStream> stream;
     std::atomic<bool> interrupted{ false };
 
     void cleanup();

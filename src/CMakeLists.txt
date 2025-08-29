@@ -24,9 +24,9 @@ qt_add_executable(app
   model/timeline/TrackData.cpp
 
   #services
-  services/decoder/AudioDecoder.cpp
-  services/decoder/FFMPEGDecoder.cpp
-  services/decoder/VideoDecoder.cpp
+  services/decoder/FFMPEGStream.cpp
+  services/decoder/VideoStream.cpp
+  services/decoder/AudioStream.cpp
   services/decoder/VideoDecodeWorker.cpp
   services/decoder/AudioDecodeWorker.cpp
   services/decoder/VideoDisplayWorker.cpp

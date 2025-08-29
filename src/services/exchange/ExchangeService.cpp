@@ -1,6 +1,8 @@
 #include "ExchangeService.h"
 #include <QDataStream>
 
+#include "services/decoder/VideoStream.h"
+
 QMimeData* ExchangeService::libItemToMIME(const LibItemData* data) const
 {
 
@@ -31,7 +33,7 @@ ClipData* ExchangeService::libItemMimeToClipData(const QMimeData* mimeData)
 	double durationInSecs;
 	dataStream >> filePath >> name >> durationInSecs;
 
-	if (auto videoInfo = videoDecoder.getVideoInfo(filePath))
+	if (auto videoInfo = VideoStream::getVideoInfo(filePath))
 	{
 		std::shared_ptr<VideoFrame> previewFrame = videoInfo.value().firstFrame;
 		return new ClipData(previewFrame, filePath, name, 0, durationInSecs, 0);

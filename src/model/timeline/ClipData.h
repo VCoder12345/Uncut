@@ -13,8 +13,9 @@ public:
 	std::shared_ptr<VideoFrame> previewFrame;
 	int trackIndex = -1;
 
-	ClipData(std::shared_ptr<VideoFrame> previewFrame, QString filePath, QString name, double startPts, double endPts, double pos) : previewFrame(previewFrame), filePath(filePath),
-		name(name), startPts(startPts), endPts(endPts), pos(pos)
+	ClipData(std::shared_ptr<VideoFrame> previewFrame, const QString& filePath, const QString& name, double startPts, double endPts,
+	         double pos) : startPts(startPts), endPts(endPts),
+	                       pos(pos), filePath(filePath), name(name), previewFrame(previewFrame)
 	{
 	}
 
