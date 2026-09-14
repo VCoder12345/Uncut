@@ -1,35 +1,41 @@
 # Uncut
 
-Multithreaded video editor implemented in C++ using Qt, FFmpeg, SDL and CMake.  
-Implements multi-track timeline playback, FFmpeg-based video/audio decoding, SDL audio playback and a producer–consumer pipeline for asynchronous streaming across multiple tracks.
+A work-in-progress video editor written in C++17 using Qt, FFmpeg, SDL, and CMake. The project explores the architecture and implementation of a multithreaded media-processing pipeline, with a focus on asynchronous decoding, buffering, and playback.
 
-## Key features
-- FFmpeg decoding pipeline for video and audio
-- SDL-based audio playback
-- Multithreaded media processing (decoding, buffering, rendering)
-- Producer–consumer shared queues for asynchronous streaming across tracks
+## Current Features
 
-## Architecture (high level)
-- Decoder layer: FFmpeg-based decoders produce decoded frames/packets.
-- Buffering layer: thread-safe shared queues hold decoded frames (producer–consumer).
-- Playback layer: scheduler pulls frames from buffers and feeds renderers; SDL plays audio.
-- UI: Qt-based timeline and preview controls.
+* **Video preview:** FFmpeg-based video decoding and playback.
+* **Media pipeline:** Separate components for decoding, buffering, and playback.
+* **Multithreaded processing:** Asynchronous media processing using a producer–consumer architecture.
+* **Qt interface:** Initial editor interface and preview controls.
+* **SDL audio:** Audio playback infrastructure.
 
-## Dependencies
-- C++17 toolchain (MSVC, clang or GCC)
-- Qt (version used in project)
-- FFmpeg (libavformat/libavcodec/libswscale, etc.)
-- SDL2 (for audio playback)
-- CMake (project uses __Ninja Multi-Config__ generator; tested with CMake >= 3.0)
-- Optional: __vcpkg__ for dependency management on Windows
+## Architecture
 
-## Build (recommended)
-1. Install dependencies (Qt, FFmpeg, SDL2). Using __vcpkg__ is recommended on Windows.
-2. Configure and generate build files:
-   - Example (out-of-source):
-     - cmake -S . -B build -G "Ninja Multi-Config"
-3. Build:
-   - cmake --build build --config Release
-4. Run the produced executable from the build output (for multi-config generators the binary will be under the chosen configuration folder, e.g., `build/Release/`).
-## Contact
-- See repository for author and contact details.
+The project is structured around a multithreaded media pipeline. Decoder threads produce decoded media, thread-safe queues buffer the results, and the playback system consumes them for rendering and audio output.
+
+Multi-track playback is currently **under development**. Its architecture and scheduling approach have been started, but the implementation is not yet complete.
+
+## Building
+
+The project uses CMake and requires a C++17-compatible compiler.
+
+### Dependencies
+
+* [Qt](https://www.qt.io/)
+* [FFmpeg](https://ffmpeg.org/)
+* [SDL2](https://www.libsdl.org/)
+* [CMake](https://cmake.org/)
+
+On Windows, [vcpkg](https://github.com/microsoft/vcpkg) can be used to manage dependencies.
+
+### Build
+
+For example, using the Ninja Multi-Config generator:
+
+```sh
+cmake -S . -B build -G "Ninja Multi-Config"
+cmake --build build --config Release
+```
+
+The resulting executable can be found in the corresponding build configuration directory.
